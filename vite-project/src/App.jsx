@@ -1,7 +1,6 @@
 import { useState, useEffect} from "react";
 import { easyDev } from "./Api.js";
-import korzina from "./assets/korzina.png"
-import editpng from "./assets/edit.png"
+import TaskComp from "./TaskComp.jsx";
 
 
 
@@ -131,84 +130,24 @@ function finishClick() {
 }
 
 
-
-
   return (
     <body>
-    
       <div >
       <input className="divAdd" id="placeholder" type="text" placeholder={placeHolder} value={newTask}
          onChange={(event)=>setNewTask(event.target.value)} />
       <button className="buttonInput" onClick={()=>clickAddTask(newTask)}>Add</button>
       </div>
-    
       <div>
         <button className={`buttonTask ${activeAll==='active'? 'activeButt': ''}`} onClick={allClick}>ВСЕ({allTodo.length})</button>
         <button className={`buttonTask ${activeWork==='active'? 'activeButt': ''}`}  onClick={workClick}>В РАБОТЕ({inWork.length})</button>
         <button className={`buttonTask ${activeFinish==='active'? 'activeButt': ''}`} onClick={finishClick}>СДЕЛАНЫ({finishTodo.length})</button>
-        <span ><ul className={activeAll}>
-            
-            {allTodo.map((item,index)=>(
-              <>
-              <li className="liTask" key={index}>
-                { edit!==item.id ?  (<><input  type="checkbox" checked={item.checked ? "checked": ''}
-                    onChange={()=>checkboxChange(item.id, item.checked)}/><span className="task">{item.name}</span>
-                  <button className="bDelete" onClick={()=>editClick(item.id)}><img className="delete" src={editpng}/></button>
-                  <button className="bDelete" onClick={()=>deleteClick(item.id)}><img className="delete" src={korzina}/></button></>): (<>
-                  <input type="text" value={editTask} onChange={(event)=>setEditTask(event.target.value)}/>
-                  <button onClick={()=>editTaskClick(editTask,item.id)}>
-                    Save
-                    </button>
-                    <button onClick={cancelClick}>
-                      Отмена
-                      </button>
-                      </>)}  
-                </li>
-              </>
-              ))}
-          </ul>
-        </span>
-        <span  >
-        <ul className={activeWork}>
-          {inWork.map((item,index)=>(
-            <li className="liTask" key={index}>
-              { edit!==item.id ?  (<><input type="checkbox"  checked={item.checked ? "checked": ''} onChange={()=>checkboxChange(item.id,item.checked)}/>
-              <span className="task">{item.name}</span>
-              <button className="bDelete" onClick={()=>editClick(item.id)}><img className="delete" src={editpng}/></button>
-              <button className="bDelete" onClick={()=>deleteClick(item.id)}><img className="delete" src={korzina}/></button></>): (<>
-              <input type="text" value={editTask} onChange={(event)=>setEditTask(event.target.value)}/>
-         <button onClick={()=>editTaskClick(editTask,item.id)}>
-          Save
-          </button>
-          <button  onClick={cancelClick}>
-            Отмена
-            </button></>)}   
-            </li>
-          ))}
-        </ul>   
-        </span>
-        <span >
-        <ul className={activeFinish}>
-          {finishTodo.map((item)=>(
-            <li className="liTask" key={item.id}>{ edit!==item.id ?  (<><input  type="checkbox" checked={item.checked ? "checked": ''} 
-              onChange={()=>checkboxChange(item.id,item.checked)}/><span className="task">{item.name}</span>
-             <button className="bDelete" onClick={()=>editClick(item.id)}><img className="delete" src={editpng}/></button>
-             <button className="bDelete" onClick={()=>deleteClick(item.id)}><img className="delete" src={korzina}/></button></>): (<>
-             <input type="text" value={editTask} onChange={(event)=>setEditTask(event.target.value)}/>
-             <button onClick={()=>editTaskClick(editTask,item.id)}>
-               Save
-               </button>
-               <button onClick={cancelClick}>
-                 Отмена
-                 </button>
-                 </>)}</li>
-          ))}
-        </ul>
-        </span>
+        <TaskComp task={allTodo} edit={edit} checkboxChange={checkboxChange} editClick={editClick} deleteClick={deleteClick}
+        editTaskClick={editTaskClick} activeTask={activeAll} cancelClick={cancelClick} editTask={editTask} setEditTask={setEditTask}/>
+        <TaskComp task={inWork} edit={edit} checkboxChange={checkboxChange} editClick={editClick} deleteClick={deleteClick}
+        editTaskClick={editTaskClick} activeTask={activeWork} cancelClick={cancelClick} editTask={editTask} setEditTask={setEditTask}/>
+        <TaskComp task={finishTodo} edit={edit} checkboxChange={checkboxChange} editClick={editClick} deleteClick={deleteClick}
+        editTaskClick={editTaskClick} activeTask={activeFinish} cancelClick={cancelClick} editTask={editTask} setEditTask={setEditTask}/>
       </div>
-      <div>  
-      </div>
-
     </body>
   );
 }
