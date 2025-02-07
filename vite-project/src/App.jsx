@@ -1,5 +1,9 @@
 import { useState, useEffect} from "react";
 import { easyDev } from "./Api.js";
+import korzina from "./assets/korzina.png"
+import editpng from "./assets/edit.png"
+
+
 
 function App() {
 
@@ -10,6 +14,11 @@ function App() {
   let [inWork, setInWork] = useState([])
   let [edit, setEdit] = useState()
   let [editTask, setEditTask] = useState('')
+  let [activeAll,setActiveAll] = useState('active')
+  let [activeWork,setActiveWork] = useState('invis')
+  let [activeFinish,setActiveFinish] = useState('invis')
+
+
 
   
 
@@ -68,6 +77,9 @@ async function checkboxChange (number) {
 function editClick (number) {
   setEdit(number)
 }
+
+
+
 async function editTaskClick(value,number) {
 
   await fetch(`https://easydev.club/api/v2/todos/${number}`, 
@@ -77,6 +89,7 @@ async function editTaskClick(value,number) {
   })
   setAllTodo(allTodo.map((item)=>(item.id===number? {...item, name:value}: item)))
   setInWork(inWork.map((item)=>(item.id===number? {...item, name:value}: item)))
+  setFinishTodo(finishTodo.map((item)=>(item.id===number? {...item, name:value}: item)))
   setEdit(null)
   setEditTask('')
 }
@@ -94,32 +107,48 @@ async function deleteClick (number) {
     setAllTodo(allTodo.filter((item)=>(item.id!==number)))
     setInWork(inWork.filter((item)=>(item.id!==number)))
     setFinishTodo(finishTodo.filter((item)=>(item.id!==number)))
-    
-  
+}
+function allClick() {
+  setActiveAll("active")
+  setActiveWork("invis")
+  setActiveFinish("invis")
+}
+function workClick(){
+  setActiveAll("invis")
+  setActiveWork("active")
+  setActiveFinish("invis")
+}
+function finishClick() {
+  setActiveAll("invis")
+  setActiveWork("invis")
+  setActiveFinish("active")
 }
 
 
 
 
   return (
-    <>
+    <body>
     
       <div >
       <input className="divAdd" id="placeholder" type="text" placeholder={placeHolder} value={newTask}
          onChange={(event)=>setNewTask(event.target.value)} />
-      <button onClick={()=>clickAddTask(newTask)}>ДОБАВИТЬ</button>
+      <button className="buttonInput" onClick={()=>clickAddTask(newTask)}>Add</button>
       </div>
     
       <div>
-        <span >ВСЕ 
-          <ul>
+        <button className={`buttonTask ${activeAll==='active'? 'activeButt': ''}`} onClick={allClick}>ВСЕ({allTodo.length})</button>
+        <button className={`buttonTask ${activeWork==='active'? 'activeButt': ''}`}  onClick={workClick}>В РАБОТЕ({inWork.length})</button>
+        <button className={`buttonTask ${activeFinish==='active'? 'activeButt': ''}`} onClick={finishClick}>СДЕЛАНЫ({finishTodo.length})</button>
+        <span ><ul className={activeAll}>
             
             {allTodo.map((item,index)=>(
               <>
-              <li key={index}>
-                { edit!==item.id ?  (<><input type="checkbox" checked={item.checked ? "checked": ''}
-                   disabled={item.checked} onChange={()=>checkboxChange(item.id)}/> {item.name}
-                  <button onClick={()=>editClick(item.id)}>Edit</button><button onClick={()=>deleteClick(item.id)}>Удалить</button></>): (<>
+              <li className="liTask" key={index}>
+                { edit!==item.id ?  (<><input  type="checkbox" checked={item.checked ? "checked": ''}
+                   disabled={item.checked} onChange={()=>checkboxChange(item.id)}/><span className="task">{item.name}</span>
+                  <button className="bDelete" onClick={()=>editClick(item.id)}><img className="delete" src={editpng}/></button>
+                  <button className="bDelete" onClick={()=>deleteClick(item.id)}><img className="delete" src={korzina}/></button></>): (<>
                   <input type="text" value={editTask} onChange={(event)=>setEditTask(event.target.value)}/>
                   <button onClick={()=>editTaskClick(editTask,item.id)}>
                     Save
@@ -133,14 +162,14 @@ async function deleteClick (number) {
               ))}
           </ul>
         </span>
-
-        <span >В РАБОТЕ
-        <ul>
+        <span  >
+        <ul className={activeWork}>
           {inWork.map((item,index)=>(
-            <li key={index}>
+            <li className="liTask" key={index}>
               { edit!==item.id ?  (<><input type="checkbox"  onChange={()=>checkboxChange(item.id)}/>
-              {item.name}
-              <button onClick={()=>editClick(item.id)}>Edit</button><button onClick={()=>deleteClick(item.id)}>Удалить</button></>): (<>
+              <span className="task">{item.name}</span>
+              <button className="bDelete" onClick={()=>editClick(item.id)}><img className="delete" src={editpng}/></button>
+              <button className="bDelete" onClick={()=>deleteClick(item.id)}><img className="delete" src={korzina}/></button></>): (<>
               <input type="text" value={editTask} onChange={(event)=>setEditTask(event.target.value)}/>
          <button onClick={()=>editTaskClick(editTask,item.id)}>
           Save
@@ -152,23 +181,29 @@ async function deleteClick (number) {
           ))}
         </ul>   
         </span>
-
-        <span >СДЕЛАНЫ
-        <ul>
+        <span >
+        <ul className={activeFinish}>
           {finishTodo.map((item)=>(
-            <>
-            <li key={item.id}>{item.name}</li>
-            </>
+            <li className="liTask" key={item.id}>{ edit!==item.id ?  (<><input  type="checkbox" checked="checked"
+              disabled={item.checked} /><span className="task">{item.name}</span>
+             <button className="bDelete" onClick={()=>editClick(item.id)}><img className="delete" src={editpng}/></button>
+             <button className="bDelete" onClick={()=>deleteClick(item.id)}><img className="delete" src={korzina}/></button></>): (<>
+             <input type="text" value={editTask} onChange={(event)=>setEditTask(event.target.value)}/>
+             <button onClick={()=>editTaskClick(editTask,item.id)}>
+               Save
+               </button>
+               <button onClick={cancelClick}>
+                 Отмена
+                 </button>
+                 </>)}</li>
           ))}
         </ul>
         </span>
       </div>
-
-      <div>
-        
+      <div>  
       </div>
 
-    </>
+    </body>
   );
 }
 
