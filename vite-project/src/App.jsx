@@ -5,6 +5,7 @@ import editpng from "./assets/edit.png"
 
 
 
+
 function App() {
 
   let [newTask, setNewTask] = useState('');
@@ -17,6 +18,7 @@ function App() {
   let [activeAll,setActiveAll] = useState('active')
   let [activeWork,setActiveWork] = useState('invis')
   let [activeFinish,setActiveFinish] = useState('invis')
+
 
 
 
@@ -41,7 +43,7 @@ useEffect(()=> {
 //ДОБАВЛЕНИЕ НОВОЙ ЗАДАЧИ ?????
 
 async function  clickAddTask(value) {
-  if (value!=''){
+  if ((value!='')&&(value.length<26)){
     let data = {isDone: false, title:value}
    await  fetch('https://easydev.club/api/v2/todos', {
       method: 'POST', 
@@ -52,26 +54,30 @@ async function  clickAddTask(value) {
   setPlaceHolder("Введите задачу")
   await Connect();
   
-}else {
-  setPlaceHolder("Пустая строка!!!")
-}} 
+}else if (value.length>26){
+  setNewTask('')
+  setPlaceHolder("Не более 26 символов")
+}
+else if (value==='') {
+  setPlaceHolder("Пустая строка!")
+  setNewTask('')
+}
+} 
 
 
  
 
 //НАЖАТИЕ НА ЧЕКБОКС/ВЫПОЛНЕНИЕ ЗАДАЧИ/ОШИБОЧНЫЙ КЛИК
-async function checkboxChange (number) {
+async function checkboxChange (number,bool) {
   await fetch(`https://easydev.club/api/v2/todos/${number}`, 
     { method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ isDone:true }),
+      body: JSON.stringify({ isDone:!bool }),
     })
+    await Connect();
 
 
-  setAllTodo(allTodo.map((item)=>(item.id===number ? {...item, checked :true}: item)))
-  if (!finishTodo.some((item) => item.id === number)) {
-  setFinishTodo([...finishTodo, allTodo.find((item)=>(item.id===number))]) }
-  setInWork(inWork.filter((item)=>(item.id!==number)))
+  
 }
 // EDIT
 function editClick (number) {
@@ -146,7 +152,7 @@ function finishClick() {
               <>
               <li className="liTask" key={index}>
                 { edit!==item.id ?  (<><input  type="checkbox" checked={item.checked ? "checked": ''}
-                   disabled={item.checked} onChange={()=>checkboxChange(item.id)}/><span className="task">{item.name}</span>
+                    onChange={()=>checkboxChange(item.id, item.checked)}/><span className="task">{item.name}</span>
                   <button className="bDelete" onClick={()=>editClick(item.id)}><img className="delete" src={editpng}/></button>
                   <button className="bDelete" onClick={()=>deleteClick(item.id)}><img className="delete" src={korzina}/></button></>): (<>
                   <input type="text" value={editTask} onChange={(event)=>setEditTask(event.target.value)}/>
@@ -166,7 +172,7 @@ function finishClick() {
         <ul className={activeWork}>
           {inWork.map((item,index)=>(
             <li className="liTask" key={index}>
-              { edit!==item.id ?  (<><input type="checkbox"  onChange={()=>checkboxChange(item.id)}/>
+              { edit!==item.id ?  (<><input type="checkbox"  checked={item.checked ? "checked": ''} onChange={()=>checkboxChange(item.id,item.checked)}/>
               <span className="task">{item.name}</span>
               <button className="bDelete" onClick={()=>editClick(item.id)}><img className="delete" src={editpng}/></button>
               <button className="bDelete" onClick={()=>deleteClick(item.id)}><img className="delete" src={korzina}/></button></>): (<>
@@ -184,8 +190,8 @@ function finishClick() {
         <span >
         <ul className={activeFinish}>
           {finishTodo.map((item)=>(
-            <li className="liTask" key={item.id}>{ edit!==item.id ?  (<><input  type="checkbox" checked="checked"
-              disabled={item.checked} /><span className="task">{item.name}</span>
+            <li className="liTask" key={item.id}>{ edit!==item.id ?  (<><input  type="checkbox" checked={item.checked ? "checked": ''} 
+              onChange={()=>checkboxChange(item.id,item.checked)}/><span className="task">{item.name}</span>
              <button className="bDelete" onClick={()=>editClick(item.id)}><img className="delete" src={editpng}/></button>
              <button className="bDelete" onClick={()=>deleteClick(item.id)}><img className="delete" src={korzina}/></button></>): (<>
              <input type="text" value={editTask} onChange={(event)=>setEditTask(event.target.value)}/>
