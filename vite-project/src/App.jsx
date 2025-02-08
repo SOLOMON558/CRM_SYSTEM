@@ -42,7 +42,7 @@ useEffect(()=> {
 //ДОБАВЛЕНИЕ НОВОЙ ЗАДАЧИ ?????
 
 async function  clickAddTask(value) {
-  if ((value!='')&&(value.length<26)){
+  if ((value>2)&&(value.length<64)){
     let data = {isDone: false, title:value}
    await  fetch('https://easydev.club/api/v2/todos', {
       method: 'POST', 
@@ -53,12 +53,12 @@ async function  clickAddTask(value) {
   setPlaceHolder("Введите задачу")
   await Connect();
   
-}else if (value.length>26){
+}else if (value.length>64){
   setNewTask('')
-  setPlaceHolder("Не более 26 символов")
+  setPlaceHolder("Не более 64 символов!")
 }
 else if (value==='') {
-  setPlaceHolder("Пустая строка!")
+  setPlaceHolder("Не менее 2 символов!")
   setNewTask('')
 }
 } 
