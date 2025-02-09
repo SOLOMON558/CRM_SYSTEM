@@ -1,6 +1,8 @@
 import { useState, useEffect} from "react";
 import { easyDev } from "./Api.js";
 import TaskComp from "./TaskComp.jsx";
+import TaskAdd from "./AddTask.jsx";
+import ChangeTask from "./ChangeList.jsx";
 
 
 
@@ -132,15 +134,11 @@ function finishClick() {
 
   return (
     <body>
-      <div >
-      <input className="divAdd" id="placeholder" type="text" placeholder={placeHolder} value={newTask}
-         onChange={(event)=>setNewTask(event.target.value)} />
-      <button className="buttonInput" onClick={()=>clickAddTask(newTask)}>Add</button>
-      </div>
+      <TaskAdd placeHolder={placeHolder} newTask={newTask} setNewTask={setNewTask} clickAddTask={clickAddTask}/>
       <div>
-        <button className={`buttonTask ${activeAll==='active'? 'activeButt': ''}`} onClick={allClick}>ВСЕ({allTodo.length})</button>
-        <button className={`buttonTask ${activeWork==='active'? 'activeButt': ''}`}  onClick={workClick}>В РАБОТЕ({inWork.length})</button>
-        <button className={`buttonTask ${activeFinish==='active'? 'activeButt': ''}`} onClick={finishClick}>СДЕЛАНЫ({finishTodo.length})</button>
+        <ChangeTask activeTask={activeAll} taskClick={allClick} tasks={allTodo}/>
+        <ChangeTask activeTask={activeWork} taskClick={workClick} tasks={inWork}/>
+        <ChangeTask activeTask={activeFinish} taskClick={finishClick} tasks={finishTodo}/>
         <TaskComp task={allTodo} edit={edit} checkboxChange={checkboxChange} editClick={editClick} deleteClick={deleteClick}
         editTaskClick={editTaskClick} activeTask={activeAll} cancelClick={cancelClick} editTask={editTask} setEditTask={setEditTask}/>
         <TaskComp task={inWork} edit={edit} checkboxChange={checkboxChange} editClick={editClick} deleteClick={deleteClick}
