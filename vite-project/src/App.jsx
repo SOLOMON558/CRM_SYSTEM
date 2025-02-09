@@ -1,5 +1,5 @@
 import { useState, useEffect} from "react";
-import { easyDev } from "./Api.js";
+import { easyDev, easyDevPost, easyDevPut, easyDevEdit, easyDevDelete } from "./Api.js";
 import TaskComp from "./TaskComp.jsx";
 import TaskAdd from "./AddTask.jsx";
 import ChangeTask from "./ChangeList.jsx";
@@ -36,7 +36,7 @@ async function Connect() {
 
 useEffect(()=> {
   Connect();
-  let interval = setInterval(Connect,4000)
+  let interval = setInterval(Connect,1000)
   return () => clearInterval(interval)
 },[])
 
@@ -45,12 +45,8 @@ useEffect(()=> {
 
 async function  clickAddTask(value) {
   if ((value.length>2)&&(value.length<64)){
-    let data = {isDone: false, title:value}
-   await  fetch('https://easydev.club/api/v2/todos', {
-      method: 'POST', 
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(data) 
-    })
+  let data = {isDone: false, title:value}
+  await easyDevPost(data)
   setNewTask('')
   setPlaceHolder("Введите задачу")
   await Connect();
@@ -62,41 +58,20 @@ async function  clickAddTask(value) {
 else if (value.length<2) {
   setPlaceHolder("Не менее 2 символов!")
   setNewTask('')
-}
-} 
-
-
- 
-
+}} 
 //НАЖАТИЕ НА ЧЕКБОКС/ВЫПОЛНЕНИЕ ЗАДАЧИ/ОШИБОЧНЫЙ КЛИК
 async function checkboxChange (number,bool) {
-  await fetch(`https://easydev.club/api/v2/todos/${number}`, 
-    { method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ isDone:!bool }),
-    })
+    await easyDevPut(number,bool)
     await Connect();
-
-
-  
 }
 // EDIT
 function editClick (number) {
   setEdit(number)
 }
 
-
-
 async function editTaskClick(value,number) {
-
-  await fetch(`https://easydev.club/api/v2/todos/${number}`, 
-  { method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ title: value }),
-  })
-  setAllTodo(allTodo.map((item)=>(item.id===number? {...item, name:value}: item)))
-  setInWork(inWork.map((item)=>(item.id===number? {...item, name:value}: item)))
-  setFinishTodo(finishTodo.map((item)=>(item.id===number? {...item, name:value}: item)))
+  await easyDevEdit(number,value)
+  await Connect ()
   setEdit(null)
   setEditTask('')
 }
@@ -106,14 +81,8 @@ function cancelClick() {
 }
 // DELETE
 async function deleteClick (number) {
-  await fetch(`https://easydev.club/api/v2/todos/${number}`, 
-    { method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(),
-    })
-    setAllTodo(allTodo.filter((item)=>(item.id!==number)))
-    setInWork(inWork.filter((item)=>(item.id!==number)))
-    setFinishTodo(finishTodo.filter((item)=>(item.id!==number)))
+    await easyDevDelete(number)
+    await Connect()
 }
 function allClick() {
   setActiveAll("active")
