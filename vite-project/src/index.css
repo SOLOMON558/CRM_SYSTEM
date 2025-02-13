@@ -1,13 +1,55 @@
-ul { 
+ul {
   list-style: none;
+  padding-left: 0;
 }
 input {
-  border: 0;
+  height: 30px;
   outline: 0;
-  
 }
-.divAdd{
+.divAdd {
   width: 200px;
   border-bottom: 1px solid #000;
-  text-align:left;
+  text-align: left;
+}
+.buttonInput {
+  margin-left: 8px;
+  height: 30px;
+  background-color: dodgerblue;
+  color: white;
+  width: 80px;
+  border: 0;
+  border-radius: 11%;
+}
+.delete {
+  width: 25px;
+  height: 25px;
+}
+.task {
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 22px;
+}
+.bDelete {
+  background-color: rgba(28, 28, 28, 0);
+  border: 0;
+}
+.liTask {
+  width: 350px;
+  background-color: rgb(240, 237, 237);
+  margin-bottom: 5px;
+}
+.buttonTask {
+  text-align: center;
+  margin-left: 0;
+  margin-top: 5px;
+  width: 96px;
+  border: 0;
+  height: 30px;
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.activeButt {
+  color: blue;
+}
+.invis {
+  display: none;
 }
