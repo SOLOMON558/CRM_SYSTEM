@@ -1,46 +1,44 @@
 import korzina from "../assets/korzina.png";
 import editpng from "../assets/edit.png";
 import { useState } from "react";
-import { easyDevEdit, easyDevDelete, easyDevPut } from "../Api/Api.js";
-export default function TodoItem({ item,connect,status }) {
-  let [editTask, setEditTask] = useState("");
-  let [edit, setEdit] = useState(undefined);
+import {
+  updateTaskTitle,
+  deleteTask,
+  updateTaskCompleted,
+} from "../Api/Api.js";
+export default function TodoItem({ item, connectToStatus, status }) {
+  const [editTask, setEditTask] = useState("");
+  const [isEdit, setIsEdit] = useState(false);
 
-  function cancelClick() {
-    setEdit(null);
-  }
-  function editClick(number) {
-    setEdit(number);
-  }
-  async function editTaskClick(value, number) {
-    await easyDevEdit(number, value);
-    await connect(status);
-    setEdit(null);
+  async function handleEditTask(value, number) {
+    await updateTaskTitle(number, value);
+    await connectToStatus(status);
+    setIsEdit(false);
     setEditTask("");
   }
-  async function deleteClick(number) {
-    await easyDevDelete(number);
-    await connect(status);
+  async function handleDeleteTask(number) {
+    await deleteTask(number);
+    await connectToStatus(status);
   }
-  async function checkboxChange(number, bool) {
-    await easyDevPut(number, bool);
-    await connect(status);
+  async function handleChangeCheckboxItem(number, bool) {
+    await updateTaskCompleted(number, bool);
+    await connectToStatus(status);
   }
 
   return (
     <li className="liTask">
-      {edit !== item.id ? (
+      {!isEdit ? (
         <>
           <input
             type="checkbox"
             checked={item.checked ? "checked" : ""}
-            onChange={() => checkboxChange(item.id, item.checked)}
+            onChange={() => handleChangeCheckboxItem(item.id, item.checked)}
           />
           <span className="task">{item.name}</span>
-          <button className="bDelete" onClick={() => editClick(item.id)}>
+          <button className="bDelete" onClick={() => setIsEdit(true)}>
             <img className="delete" src={editpng} />
           </button>
-          <button className="bDelete" onClick={() => deleteClick(item.id)}>
+          <button className="bDelete" onClick={() => handleDeleteTask(item.id)}>
             <img className="delete" src={korzina} />
           </button>
         </>
@@ -51,8 +49,10 @@ export default function TodoItem({ item,connect,status }) {
             value={editTask}
             onChange={(event) => setEditTask(event.target.value)}
           />
-          <button onClick={() => editTaskClick(editTask, item.id)}>Save</button>
-          <button onClick={cancelClick}>Отмена</button>
+          <button onClick={() => handleEditTask(editTask, item.id)}>
+            Save
+          </button>
+          <button onClick={() => setIsEdit(false)}>Отмена</button>
         </>
       )}
     </li>

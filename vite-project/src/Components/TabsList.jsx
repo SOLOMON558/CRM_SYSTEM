@@ -1,4 +1,4 @@
-export default function ChangeTask({ connectToStatus, status, countTasks }) {
+export default function TabsList({ connectToStatus, status, countTasks }) {
   return (
     <>
       <button

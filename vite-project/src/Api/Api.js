@@ -1,16 +1,19 @@
-export async function easyDev(status) {
+export async function getTasks(status) {
   try {
-    let response = await fetch(`https://easydev.club/api/v2/todos?filter=${status}`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    });
+    const response = await fetch(
+      `https://easydev.club/api/v2/todos?filter=${status}`,
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
     return await response.json();
   } catch (error) {
     console.error("Ошибка получения файлов", error);
   }
 }
 
-export async function easyDevPost(data) {
+export async function postTask(data) {
   try {
     await fetch("https://easydev.club/api/v2/todos", {
       method: "POST",
@@ -22,7 +25,7 @@ export async function easyDevPost(data) {
   }
 }
 
-export async function easyDevPut(number, bool) {
+export async function updateTaskCompleted(number, bool) {
   try {
     await fetch(`https://easydev.club/api/v2/todos/${number}`, {
       method: "PUT",
@@ -34,7 +37,7 @@ export async function easyDevPut(number, bool) {
   }
 }
 
-export async function easyDevEdit(number, value) {
+export async function updateTaskTitle(number, value) {
   try {
     await fetch(`https://easydev.club/api/v2/todos/${number}`, {
       method: "PUT",
@@ -46,7 +49,7 @@ export async function easyDevEdit(number, value) {
   }
 }
 
-export async function easyDevDelete(number) {
+export async function deleteTask(number) {
   try {
     await fetch(`https://easydev.club/api/v2/todos/${number}`, {
       method: "DELETE",
