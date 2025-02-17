@@ -7,9 +7,8 @@ import ChangeTask from "../Components/ChangeTask.jsx";
 function App() {
   let [allTodo, setAllTodo] = useState([]);
   const[choiceTodoList, setChoiceTodoList] = useState('all')
+  const[countTasks, setCountTasks] = useState([0,0,0])
 
-
-  
   async function connectToStatus(status) {
     setChoiceTodoList(status)
     let apiConnect = await easyDev(status);
@@ -18,22 +17,22 @@ function App() {
       name: item.title,
       checked: item.isDone,
     }));
+    setCountTasks([apiConnect.info.all,apiConnect.info.inWork,apiConnect.info.completed])
     setAllTodo(data)
-    
   }
 
   useEffect(() => {
     const reloadTodoList= async () => await connectToStatus(choiceTodoList)
+    reloadTodoList();
     const interval = setInterval(reloadTodoList, 4000);
     return () => clearInterval(interval);
   }, [choiceTodoList]);
 
   return (
     <>
-      <button onClick={()=>connectToStatus('all')}>Все</button>
-      <button onClick={()=>connectToStatus('inWork')}>В работе</button>
-      <button onClick={()=>connectToStatus('completed')}>Завершены</button>
-      <TaskComp task={allTodo} connect={connectToStatus}  />
+      <TaskAdd connect={connectToStatus} status={choiceTodoList} />
+      <ChangeTask connectToStatus={connectToStatus} status={choiceTodoList} countTasks={countTasks} />
+      <TaskComp task={allTodo}  connect={connectToStatus} status={choiceTodoList}/>
     </>
   );
 }

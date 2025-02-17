@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { easyDevPost } from "../Api/Api.js";
-export default function TaskAdd({ connect }) {
+export default function TaskAdd({ connect, status }) {
   let [newTask, setNewTask] = useState("");
   let [placeHolder, setPlaceHolder] = useState("Введите задачу");
 
@@ -10,7 +10,7 @@ export default function TaskAdd({ connect }) {
       await easyDevPost(data);
       setNewTask("");
       setPlaceHolder("Введите задачу");
-      await connect();
+      await connect(status);
     } else if (value.length > 64) {
       setNewTask("");
       setPlaceHolder("Не более 64 символов!");

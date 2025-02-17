@@ -2,7 +2,7 @@ import korzina from "../assets/korzina.png";
 import editpng from "../assets/edit.png";
 import { useState } from "react";
 import { easyDevEdit, easyDevDelete, easyDevPut } from "../Api/Api.js";
-export default function TodoItem({ item,connect }) {
+export default function TodoItem({ item,connect,status }) {
   let [editTask, setEditTask] = useState("");
   let [edit, setEdit] = useState(undefined);
 
@@ -14,17 +14,17 @@ export default function TodoItem({ item,connect }) {
   }
   async function editTaskClick(value, number) {
     await easyDevEdit(number, value);
-    await connect();
+    await connect(status);
     setEdit(null);
     setEditTask("");
   }
   async function deleteClick(number) {
     await easyDevDelete(number);
-    await connect();
+    await connect(status);
   }
   async function checkboxChange(number, bool) {
     await easyDevPut(number, bool);
-    await connect();
+    await connect(status);
   }
 
   return (
