@@ -1,6 +1,6 @@
-export async function easyDev() {
+export async function easyDev(status) {
   try {
-    let response = await fetch("https://easydev.club/api/v2/todos", {
+    let response = await fetch(`https://easydev.club/api/v2/todos?filter=${status}`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     });

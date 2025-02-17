@@ -6,11 +6,11 @@ export default function TaskComp({
 }) {
   return (
     <span>
-      <ul className={activeTask}>
-        {task.map((item, index) => (
+      <ul >
+        {task.map((item) => (
           <TodoItem
             connect={connect}
-            key={index}
+            key={item.id}
             item={item}
           />
         ))}
