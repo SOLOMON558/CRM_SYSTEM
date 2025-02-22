@@ -1,4 +1,9 @@
-export default function TabsList({ connectToStatus, status, countTasks }) {
+interface TabsListTypes{
+  countTasks: number[];
+  status: string;
+  connectToStatus: (status:string) => void;
+}
+export default function TabsList({ connectToStatus, status, countTasks }:TabsListTypes):JSX.Element {
   return (
     <>
       <button

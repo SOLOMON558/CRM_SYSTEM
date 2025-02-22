@@ -5,23 +5,30 @@ import {
   updateTaskTitle,
   deleteTask,
   updateTaskCompleted,
-} from "../Api/Api.js";
-export default function TodoItem({ item, connectToStatus, status }) {
+} from "../Api/Api";
+import { AllTodoTypes } from "../TodoListPage/App";
+export interface TodoItemTypes {
+  item: AllTodoTypes
+  status: string;
+  connectToStatus: (status:string) => void;
+}
+
+export default function TodoItem ({ item, connectToStatus, status }: TodoItemTypes): JSX.Element {
   const [editTask, setEditTask] = useState("");
   const [isEdit, setIsEdit] = useState(false);
 
-  async function handleEditTask(value, number) {
-    await updateTaskTitle(number, value);
+  async function handleEditTask (name:string, id:number):Promise<void> {
+    await updateTaskTitle(id, name);
     await connectToStatus(status);
     setIsEdit(false);
     setEditTask("");
   }
-  async function handleDeleteTask(number) {
-    await deleteTask(number);
+  async function handleDeleteTask(id:number): Promise<void> {
+    await deleteTask(id);
     await connectToStatus(status);
   }
-  async function handleChangeCheckboxItem(number, bool) {
-    await updateTaskCompleted(number, bool);
+  async function handleChangeCheckboxItem(id:number, checked:boolean): Promise<void> {
+    await updateTaskCompleted(id, checked);
     await connectToStatus(status);
   }
 
@@ -31,10 +38,10 @@ export default function TodoItem({ item, connectToStatus, status }) {
         <>
           <input
             type="checkbox"
-            checked={item.checked ? "checked" : ""}
-            onChange={() => handleChangeCheckboxItem(item.id, item.checked)}
+            checked={item.isDone ? true : false}
+            onChange={() => handleChangeCheckboxItem(item.id, item.isDone)}
           />
-          <span className="task">{item.name}</span>
+          <span className="task">{item.title}</span>
           <button className="bDelete" onClick={() => setIsEdit(true)}>
             <img className="delete" src={editpng} />
           </button>
