@@ -1,6 +1,6 @@
 import ReactDOM from "react-dom/client";
 
-import App from "./TodoListPage/App.jsx";
+import App from "./TodoListPage/App.tsx";
 import "./index.css";
 
 const entryPoint = document.getElementById("root");

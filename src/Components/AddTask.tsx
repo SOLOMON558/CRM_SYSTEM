@@ -1,9 +1,13 @@
 import { useState } from "react";
-import { postTask } from "../Api/Api.js";
-export default function AddTask({ connectToStatus, status }) {
-  const [newTask, setNewTask] = useState("");
+import { postTask } from "../Api/Api";
+interface AddTaskTypes{
+  status: string;
+  connectToStatus: (status:string) => void;
+}
+export default function AddTask({ connectToStatus, status }:AddTaskTypes):JSX.Element {
 
-  async function handleAddTask(value, event) {
+  const [newTask, setNewTask] = useState("");
+  async function handleAddTask(value:string, event:any) {
     event.preventDefault();
     if (value.length > 2 && value.length < 64) {
       const data = { isDone: false, title: value };

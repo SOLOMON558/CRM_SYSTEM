@@ -1,28 +1,29 @@
 import { useState, useEffect } from "react";
-import { getTasks } from "../Api/Api.js";
-import TodoList from "../Components/TodoList.jsx";
-import AddTask from "../Components/AddTask.jsx";
-import TabsList from "../Components/TabsList.jsx";
+import { getTasks } from "../Api/Api";
+import TodoList from "../Components/TodoList";
+import AddTask from "../Components/AddTask";
+import TabsList from "../Components/TabsList";
+export interface AllTodoTypes {
+  id: number,
+  title: string,
+  isDone: boolean
+}
 
-function App() {
-  const [allTodo, setAllTodo] = useState([]);
+
+function App(): JSX.Element {
+  const [allTodo, setAllTodo] = useState<AllTodoTypes[]>([]);
   const [choiceTodoList, setChoiceTodoList] = useState("all");
   const [countTasks, setCountTasks] = useState([0, 0, 0]);
 
-  async function connectToStatus(status) {
+  async function connectToStatus(status:string): Promise<void> {
     setChoiceTodoList(status);
     const apiConnect = await getTasks(status);
-    const data = apiConnect.data.map((item) => ({
-      id: item.id,
-      name: item.title,
-      checked: item.isDone,
-    }));
     setCountTasks([
       apiConnect.info.all,
       apiConnect.info.inWork,
       apiConnect.info.completed,
     ]);
-    setAllTodo(data);
+    setAllTodo(apiConnect.data);
   }
 
   useEffect(() => {

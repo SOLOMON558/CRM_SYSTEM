@@ -1,4 +1,5 @@
-export async function getTasks(status) {
+
+export async function getTasks(status:string): Promise<Record<string, any>> {
   try {
     const response = await fetch(
       `https://easydev.club/api/v2/todos?filter=${status}`,
@@ -10,10 +11,11 @@ export async function getTasks(status) {
     return await response.json();
   } catch (error) {
     console.error("Ошибка получения файлов", error);
+    throw error
   }
 }
 
-export async function postTask(data) {
+export async function postTask(data:object): Promise<void> {
   try {
     await fetch("https://easydev.club/api/v2/todos", {
       method: "POST",
@@ -25,7 +27,7 @@ export async function postTask(data) {
   }
 }
 
-export async function updateTaskCompleted(number, bool) {
+export async function updateTaskCompleted(number:number, bool:boolean): Promise<void> {
   try {
     await fetch(`https://easydev.club/api/v2/todos/${number}`, {
       method: "PUT",
@@ -37,7 +39,7 @@ export async function updateTaskCompleted(number, bool) {
   }
 }
 
-export async function updateTaskTitle(number, value) {
+export async function updateTaskTitle(number:number, value:string): Promise<void> {
   try {
     await fetch(`https://easydev.club/api/v2/todos/${number}`, {
       method: "PUT",
@@ -49,7 +51,7 @@ export async function updateTaskTitle(number, value) {
   }
 }
 
-export async function deleteTask(number) {
+export async function deleteTask(number:number): Promise<void> {
   try {
     await fetch(`https://easydev.club/api/v2/todos/${number}`, {
       method: "DELETE",
