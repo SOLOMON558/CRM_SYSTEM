@@ -1,18 +1,12 @@
 import TodoItem from "./TodoItem";
-import { AllTodoTypes } from "../TodoListPage/App";
-interface TodoListTypes{
-  task: AllTodoTypes[];
-  status: string;
-  connectToStatus: (status:string) => void;
-}
+import {TodoListTypes} from "../types/type"
 
-export default function TodoList({ connectToStatus, task, status }:TodoListTypes): JSX.Element {
+export default function TodoList({ getAndUpdateTasks, allTodo}:TodoListTypes): JSX.Element {
   return (
     <ul>
-      {task.map((item) => (
+      {allTodo.map((item) => (
         <TodoItem
-          status={status}
-          connectToStatus={connectToStatus}
+        getAndUpdateTasks={getAndUpdateTasks}
           key={item.id}
           item={item}
         />

@@ -1,35 +1,29 @@
 import korzina from "../assets/korzina.png";
 import editpng from "../assets/edit.png";
 import { useState } from "react";
-import {
-  updateTaskTitle,
-  deleteTask,
-  updateTaskCompleted,
-} from "../Api/Api";
-import { AllTodoTypes } from "../TodoListPage/App";
-export interface TodoItemTypes {
-  item: AllTodoTypes
-  status: string;
-  connectToStatus: (status:string) => void;
-}
+import { updateTaskTitle, deleteTask, updateTaskCompleted } from "../api/Api";
+import {TodoItemTypes} from "../types/type"
 
-export default function TodoItem ({ item, connectToStatus, status }: TodoItemTypes): JSX.Element {
+export default function TodoItem({ item, getAndUpdateTasks }:TodoItemTypes): JSX.Element {
   const [editTask, setEditTask] = useState("");
   const [isEdit, setIsEdit] = useState(false);
 
-  async function handleEditTask (name:string, id:number):Promise<void> {
-    await updateTaskTitle(id, name);
-    await connectToStatus(status);
+  async function handleEditTask(title: string, id: number): Promise<void> {
+    await updateTaskTitle(id, title);
+    await getAndUpdateTasks();
     setIsEdit(false);
     setEditTask("");
   }
-  async function handleDeleteTask(id:number): Promise<void> {
+  async function handleDeleteTask(id: number): Promise<void> {
     await deleteTask(id);
-    await connectToStatus(status);
+    await getAndUpdateTasks();
   }
-  async function handleChangeCheckboxItem(id:number, checked:boolean): Promise<void> {
-    await updateTaskCompleted(id, checked);
-    await connectToStatus(status);
+  async function handleChangeCheckboxItem(
+    id: number,
+    isDone: boolean
+  ): Promise<void> {
+    await updateTaskCompleted(id, isDone);
+    await getAndUpdateTasks();
   }
 
   return (

@@ -1,28 +1,24 @@
-interface TabsListTypes{
-  countTasks: number[];
-  status: string;
-  connectToStatus: (status:string) => void;
-}
-export default function TabsList({ connectToStatus, status, countTasks }:TabsListTypes):JSX.Element {
+import {TabsListTypes } from "../types/type";
+export default function TabsList({ getAndUpdateTasks, status, countTasks }:TabsListTypes):JSX.Element {
   return (
     <>
       <button
         className={`buttonTask ${status === "all" ? "activeButt" : ""}`}
-        onClick={() => connectToStatus("all")}
+        onClick={() => getAndUpdateTasks("all")}
       >
-        Все({countTasks[0]})
+        Все({countTasks.all})
       </button>
       <button
         className={`buttonTask ${status === "inWork" ? "activeButt" : ""}`}
-        onClick={() => connectToStatus("inWork")}
+        onClick={() => getAndUpdateTasks("inWork")}
       >
-        В работе({countTasks[1]})
+        В работе({countTasks.inWork})
       </button>
       <button
         className={`buttonTask ${status === "completed" ? "activeButt" : ""}`}
-        onClick={() => connectToStatus("completed")}
+        onClick={() => getAndUpdateTasks("completed")}
       >
-        Завершены({countTasks[2]})
+        Завершены({countTasks.completed})
       </button>
     </>
   );

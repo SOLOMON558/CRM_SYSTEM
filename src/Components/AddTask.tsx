@@ -1,23 +1,22 @@
 import { useState } from "react";
-import { postTask } from "../Api/Api";
-interface AddTaskTypes{
-  status: string;
-  connectToStatus: (status:string) => void;
-}
-export default function AddTask({ connectToStatus, status }:AddTaskTypes):JSX.Element {
+import { postTask } from "../api/Api";
+import {AddTaskTypes } from "../types/type";
+
+
+export default function AddTask({ getAndUpdateTasks}:AddTaskTypes):JSX.Element {
 
   const [newTask, setNewTask] = useState("");
-  async function handleAddTask(value:string, event:any) {
+  async function handleAddTask(title:string, event:any) {
     event.preventDefault();
-    if (value.length > 2 && value.length < 64) {
-      const data = { isDone: false, title: value };
+    if (title.length > 2 && title.length < 64) {
+      const data = { isDone: false, title: title };
       await postTask(data);
-      await connectToStatus(status);
+      await getAndUpdateTasks();
       setNewTask("");
-    } else if (value.length > 64) {
+    } else if (title.length > 64) {
       alert("Не более 64 символов!");
       setNewTask("");
-    } else if (value.length < 2) {
+    } else if (title.length < 2) {
       alert("Не менее 2 символов!");
       setNewTask("");
     }
