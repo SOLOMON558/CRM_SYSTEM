@@ -1,28 +1,29 @@
 import korzina from "../assets/korzina.png";
 import editpng from "../assets/edit.png";
 import { useState } from "react";
-import {
-  updateTaskTitle,
-  deleteTask,
-  updateTaskCompleted,
-} from "../Api/Api.js";
-export default function TodoItem({ item, connectToStatus, status }) {
+import { updateTaskTitle, deleteTask, updateTaskCompleted } from "../api/Api";
+import {TodoItemTypes} from "../types/type"
+
+export default function TodoItem({ item, getAndUpdateTasks }:TodoItemTypes): JSX.Element {
   const [editTask, setEditTask] = useState("");
   const [isEdit, setIsEdit] = useState(false);
 
-  async function handleEditTask(value, number) {
-    await updateTaskTitle(number, value);
-    await connectToStatus(status);
+  async function handleEditTask(title: string, id: number): Promise<void> {
+    await updateTaskTitle(id, title);
+    await getAndUpdateTasks();
     setIsEdit(false);
     setEditTask("");
   }
-  async function handleDeleteTask(number) {
-    await deleteTask(number);
-    await connectToStatus(status);
+  async function handleDeleteTask(id: number): Promise<void> {
+    await deleteTask(id);
+    await getAndUpdateTasks();
   }
-  async function handleChangeCheckboxItem(number, bool) {
-    await updateTaskCompleted(number, bool);
-    await connectToStatus(status);
+  async function handleChangeCheckboxItem(
+    id: number,
+    isDone: boolean
+  ): Promise<void> {
+    await updateTaskCompleted(id, isDone);
+    await getAndUpdateTasks();
   }
 
   return (
@@ -31,10 +32,10 @@ export default function TodoItem({ item, connectToStatus, status }) {
         <>
           <input
             type="checkbox"
-            checked={item.checked ? "checked" : ""}
-            onChange={() => handleChangeCheckboxItem(item.id, item.checked)}
+            checked={item.isDone ? true : false}
+            onChange={() => handleChangeCheckboxItem(item.id, item.isDone)}
           />
-          <span className="task">{item.name}</span>
+          <span className="task">{item.title}</span>
           <button className="bDelete" onClick={() => setIsEdit(true)}>
             <img className="delete" src={editpng} />
           </button>
