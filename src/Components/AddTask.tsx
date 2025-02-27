@@ -1,39 +1,50 @@
-import { useState } from "react";
 import { postTask } from "../api/Api";
-import {AddTaskTypes } from "../types/type";
+import { Input, Form, Button } from "antd";
 
+interface AddTaskTypes {
+  getAndUpdateTasks: () => Promise<void>;
+}
 
-export default function AddTask({ getAndUpdateTasks}:AddTaskTypes):JSX.Element {
+export default function AddTask({
+  getAndUpdateTasks,
+}: AddTaskTypes): JSX.Element {
+  const [form] = Form.useForm();
 
-  const [newTask, setNewTask] = useState("");
-  async function handleAddTask(title:string, event:any) {
-    event.preventDefault();
-    if (title.length > 2 && title.length < 64) {
-      const data = { isDone: false, title: title };
+  async function handleAddTask(value: { task: string }) {
+    const newTask = value.task;
+    if (newTask.length >= 2 && newTask.length < 64) {
+      const data = { isDone: false, title: newTask };
       await postTask(data);
       await getAndUpdateTasks();
-      setNewTask("");
-    } else if (title.length > 64) {
-      alert("Не более 64 символов!");
-      setNewTask("");
-    } else if (title.length < 2) {
-      alert("Не менее 2 символов!");
-      setNewTask("");
+      form.resetFields();
     }
   }
   return (
-    <form onSubmit={async (event) => await handleAddTask(newTask, event)}>
-      <input
-        className="divAdd"
-        id="placeholder"
-        type="text"
-        placeholder="Введите задачу"
-        value={newTask}
-        onChange={(event) => setNewTask(event.target.value)}
-      />
-      <button className="buttonInput" type="submit">
-        Add
-      </button>
-    </form>
+    <Form
+      form={form}
+      style={{ display: "flex", gap: "8px" }}
+      name="basic"
+      onFinish={handleAddTask}
+    >
+      <Form.Item
+        name="task"
+        rules={[
+          { min: 2, message: "Минимум 2 символа!" },
+          { max: 64, message: "Максимум 64 символа!" },
+        ]}
+      >
+        <Input
+          className="divAdd"
+          id="placeholder"
+          type="text"
+          placeholder="Введите задачу"
+        />
+      </Form.Item>
+      <Form.Item>
+        <Button id="buttonInput" type="primary" htmlType="submit">
+          Add
+        </Button>
+      </Form.Item>
+    </Form>
   );
 }

@@ -26,21 +26,5 @@ export interface MetaResponse<T, N> {
 
 export type StatusType = "all"|"completed"|"inWork";
 
-export interface DataObject {
-    isDone: boolean,
-    title: string
-}
-export interface AddTaskTypes {
-	getAndUpdateTasks:()=> Promise<void>
-  }
-export interface TabsListTypes {
-	getAndUpdateTasks: (status:StatusType)=> Promise<void>;
-	status:StatusType;
-	countTasks:TodoInfo;
-}
-export interface TodoListTypes extends AddTaskTypes {
-	allTodo: Todo[]
-}
-export interface TodoItemTypes extends AddTaskTypes {
-	item: Todo;
-}
+
+

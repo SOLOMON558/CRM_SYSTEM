@@ -1,23 +1,36 @@
-import korzina from "../assets/korzina.png";
-import editpng from "../assets/edit.png";
+import { Input, Form, Button } from "antd";
 import { useState } from "react";
 import { updateTaskTitle, deleteTask, updateTaskCompleted } from "../api/Api";
-import {TodoItemTypes} from "../types/type"
+import { Todo } from "../types/type";
+import { Checkbox } from "antd";
+import { CloseSquareOutlined, EditOutlined } from "@ant-design/icons";
+interface TodoItemTypes {
+  getAndUpdateTasks: () => Promise<void>;
+  item: Todo;
+}
 
-export default function TodoItem({ item, getAndUpdateTasks }:TodoItemTypes): JSX.Element {
-  const [editTask, setEditTask] = useState("");
+export default function TodoItem({
+  item,
+  getAndUpdateTasks,
+}: TodoItemTypes): JSX.Element {
+  const [form] = Form.useForm();
   const [isEdit, setIsEdit] = useState(false);
 
-  async function handleEditTask(title: string, id: number): Promise<void> {
-    await updateTaskTitle(id, title);
-    await getAndUpdateTasks();
-    setIsEdit(false);
-    setEditTask("");
+  async function handleEditTask(values: { task: string }): Promise<void> {
+    const title = values.task;
+    if (title.length > 2 && title.length < 64) {
+      await updateTaskTitle(item.id, title);
+      await getAndUpdateTasks();
+      setIsEdit(false);
+      form.resetFields();
+    }
   }
+
   async function handleDeleteTask(id: number): Promise<void> {
     await deleteTask(id);
     await getAndUpdateTasks();
   }
+
   async function handleChangeCheckboxItem(
     id: number,
     isDone: boolean
@@ -30,30 +43,43 @@ export default function TodoItem({ item, getAndUpdateTasks }:TodoItemTypes): JSX
     <li className="liTask">
       {!isEdit ? (
         <>
-          <input
+          <Checkbox
             type="checkbox"
             checked={item.isDone ? true : false}
             onChange={() => handleChangeCheckboxItem(item.id, item.isDone)}
           />
           <span className="task">{item.title}</span>
           <button className="bDelete" onClick={() => setIsEdit(true)}>
-            <img className="delete" src={editpng} />
+            <EditOutlined />
           </button>
           <button className="bDelete" onClick={() => handleDeleteTask(item.id)}>
-            <img className="delete" src={korzina} />
+            <CloseSquareOutlined />
           </button>
         </>
       ) : (
         <>
-          <input
-            type="text"
-            value={editTask}
-            onChange={(event) => setEditTask(event.target.value)}
-          />
-          <button onClick={() => handleEditTask(editTask, item.id)}>
-            Save
-          </button>
-          <button onClick={() => setIsEdit(false)}>Отмена</button>
+          <Form
+            form={form}
+            name="basic"
+            onFinish={handleEditTask}
+            style={{ display: "flex", gap: "8px" }}
+          >
+            <Form.Item
+              name="task"
+              rules={[
+                { min: 2, message: "Минимум 2 символа!" },
+                { max: 64, message: "Максимум 64 символа!" },
+              ]}
+            >
+              <Input type="text" />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit">
+                Save
+              </Button>
+              <Button onClick={() => setIsEdit(false)}>Отмена</Button>
+            </Form.Item>
+          </Form>
         </>
       )}
     </li>

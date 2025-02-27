@@ -1,9 +1,10 @@
-import TodoPage from "./TodoListPage/TodoPage";
-
+import AppRouter from "./routes/AppRouter";
 
 function App(): JSX.Element {
   return (
-    <TodoPage />
-  )
+    <>
+      <AppRouter />
+    </>
+  );
 }
 export default App;

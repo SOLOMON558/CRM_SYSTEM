@@ -1,28 +1,27 @@
-import { MetaResponse, Todo, TodoInfo, TodoRequest, StatusType,DataObject } from "../types/type";
+import { MetaResponse, Todo, TodoInfo, TodoRequest, StatusType} from "../types/type";
+import axios from "axios";
 
 export async function getTasks(status:StatusType): Promise<MetaResponse<Todo, TodoInfo>> {
   try {
-    const response = await fetch(
+    const response = await axios.get(
       `https://easydev.club/api/v2/todos?filter=${status}`,
       {
-        method: "GET",
         headers: { "Content-Type": "application/json" },
-      }
-    );
-    return await response.json();
+      });
+    return ( await response.data)
   } catch (error) {
     console.error("Ошибка получения файлов", error);
     throw error
   }
 }
 
-export async function postTask(data:DataObject): Promise<void> {
+export async function postTask(data:TodoRequest): Promise<void> {
   try {
-    await fetch("https://easydev.club/api/v2/todos", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
+    await axios.post("https://easydev.club/api/v2/todos", 
+      data,
+      {
+        headers: { "Content-Type": "application/json" }
+      });
   } catch (error) {
     console.error("Ошибка портирования данных", error);
   }
@@ -30,11 +29,11 @@ export async function postTask(data:DataObject): Promise<void> {
 
 export async function updateTaskCompleted(id:number, isDone:boolean): Promise<void> {
   try {
-    await fetch(`https://easydev.club/api/v2/todos/${id}`, {
-      method: "PUT",
+    await axios.put(`https://easydev.club/api/v2/todos/${id}`, 
+      { isDone: !isDone },
+      {
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ isDone: !isDone }),
-    });
+      });
   } catch (error) {
     console.error("Ошибка изменения данных", error);
   }
@@ -42,11 +41,11 @@ export async function updateTaskCompleted(id:number, isDone:boolean): Promise<vo
 
 export async function updateTaskTitle(id:number, title:string): Promise<void> {
   try {
-    await fetch(`https://easydev.club/api/v2/todos/${id}`, {
-      method: "PUT",
+    await axios.put(`https://easydev.club/api/v2/todos/${id}`, 
+      { title: title },
+      {
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: title }),
-    });
+      });
   } catch (error) {
     console.error("Ошибка изменения данных", error);
   }
@@ -54,10 +53,10 @@ export async function updateTaskTitle(id:number, title:string): Promise<void> {
 
 export async function deleteTask(id:number): Promise<void> {
   try {
-    await fetch(`https://easydev.club/api/v2/todos/${id}`, {
-      method: "DELETE",
+    await axios.delete(`https://easydev.club/api/v2/todos/${id}`, 
+      {
       headers: { "Content-Type": "application/json" },
-    });
+      });
   } catch (error) {
     console.error("Ошибка удаления данных", error);
   }

@@ -4,10 +4,11 @@ import TodoList from "../components/TodoList";
 import AddTask from "../components/AddTask";
 import TabsList from "../components/TabsList";
 import { StatusType, Todo, TodoInfo } from "../types/type";
+import Drawers from "../components/Drawer";
 
 export default function TodoPage() {
   const [allTodo, setAllTodo] = useState<Todo[]>([]);
-  const [currentTodoList, setCurrentTodoList] = useState<StatusType>("all");
+  const [currentStatusType, setCurrentStatusType] = useState<StatusType>("all");
   const [countTasks, setCountTasks] = useState<TodoInfo>({
     all: 0,
     completed: 0,
@@ -15,7 +16,7 @@ export default function TodoPage() {
   });
 
   async function getAndUpdateTasks(status: StatusType): Promise<void> {
-    setCurrentTodoList(status);
+    setCurrentStatusType(status);
     const result = await getTasks(status);
 
     if (result.info) {
@@ -30,24 +31,26 @@ export default function TodoPage() {
   }
 
   useEffect(() => {
-    const reloadTodoList = async () => await getAndUpdateTasks(currentTodoList);
+    const reloadTodoList = async () =>
+      await getAndUpdateTasks(currentStatusType);
     reloadTodoList();
     const interval = setInterval(reloadTodoList, 4000);
     return () => clearInterval(interval);
-  }, [currentTodoList]);
+  }, [currentStatusType]);
 
   return (
     <>
-      <AddTask getAndUpdateTasks={() => getAndUpdateTasks(currentTodoList)} />
+      <AddTask getAndUpdateTasks={() => getAndUpdateTasks(currentStatusType)} />
       <TabsList
         getAndUpdateTasks={getAndUpdateTasks}
-        status={currentTodoList}
+        status={currentStatusType}
         countTasks={countTasks}
       />
       <TodoList
         allTodo={allTodo}
-        getAndUpdateTasks={() => getAndUpdateTasks(currentTodoList)}
+        getAndUpdateTasks={() => getAndUpdateTasks(currentStatusType)}
       />
+      <Drawers />
     </>
   );
 }
