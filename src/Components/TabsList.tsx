@@ -1,34 +1,40 @@
 import { StatusType, TodoInfo } from "../types/type";
 import { Button } from "antd";
 export interface TabsListTypes {
-  getAndUpdateTasks: (status: StatusType) => Promise<void>;
+  setStatus: (status: StatusType) => void;
   status: StatusType;
   countTasks: TodoInfo;
 }
 export default function TabsList({
-  getAndUpdateTasks,
+  setStatus,
   status,
   countTasks,
 }: TabsListTypes): JSX.Element {
+
+  
+  function handleCurrentStatusTabList(status: StatusType) {
+    setStatus(status);
+  }
+
   return (
     <>
       <Button
         className={`buttonTask ${status === "all" ? "activeButt" : ""}`}
-        onClick={() => getAndUpdateTasks("all")}
+        onClick={() => handleCurrentStatusTabList("all")}
         type="primary"
       >
         Все({countTasks.all})
       </Button>
       <Button
         className={`buttonTask ${status === "inWork" ? "activeButt" : ""}`}
-        onClick={() => getAndUpdateTasks("inWork")}
+        onClick={() => handleCurrentStatusTabList("inWork")}
         type="primary"
       >
         В работе({countTasks.inWork})
       </Button>
       <Button
         className={`buttonTask ${status === "completed" ? "activeButt" : ""}`}
-        onClick={() => getAndUpdateTasks("completed")}
+        onClick={() => handleCurrentStatusTabList("completed")}
         type="primary"
       >
         Завершены({countTasks.completed})

@@ -1,6 +1,7 @@
 import { MetaResponse, Todo, TodoInfo, TodoRequest, StatusType} from "../types/type";
 import axios from "axios";
 
+
 export async function getTasks(status:StatusType): Promise<MetaResponse<Todo, TodoInfo>> {
   try {
     const response = await axios.get(
@@ -61,3 +62,4 @@ export async function deleteTask(id:number): Promise<void> {
     console.error("Ошибка удаления данных", error);
   }
 }
+

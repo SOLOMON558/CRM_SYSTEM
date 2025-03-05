@@ -1,43 +1,55 @@
 import { Input, Form, Button } from "antd";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { updateTaskTitle, deleteTask, updateTaskCompleted } from "../api/Api";
 import { Todo } from "../types/type";
 import { Checkbox } from "antd";
 import { CloseSquareOutlined, EditOutlined } from "@ant-design/icons";
 interface TodoItemTypes {
-  getAndUpdateTasks: () => Promise<void>;
   item: Todo;
 }
 
 export default function TodoItem({
-  item,
-  getAndUpdateTasks,
+  item
 }: TodoItemTypes): JSX.Element {
   const [form] = Form.useForm();
   const [isEdit, setIsEdit] = useState(false);
+  const queryClient = useQueryClient();
 
   async function handleEditTask(values: { task: string }): Promise<void> {
     const title = values.task;
     if (title.length > 2 && title.length < 64) {
-      await updateTaskTitle(item.id, title);
-      await getAndUpdateTasks();
-      setIsEdit(false);
-      form.resetFields();
+      editTitleTaskMutation.mutate(title);
     }
   }
+  const editTitleTaskMutation = useMutation({
+    mutationFn: (title: string) => updateTaskTitle(item.id, title),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      setIsEdit(false);
+      form.resetFields();
+    },
+  });
 
-  async function handleDeleteTask(id: number): Promise<void> {
-    await deleteTask(id);
-    await getAndUpdateTasks();
+  async function handleDeleteTask(): Promise<void> {
+    deleteTaskMutation.mutate();
   }
+  const deleteTaskMutation = useMutation({
+    mutationFn: () => deleteTask(item.id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+    },
+  });
 
-  async function handleChangeCheckboxItem(
-    id: number,
-    isDone: boolean
-  ): Promise<void> {
-    await updateTaskCompleted(id, isDone);
-    await getAndUpdateTasks();
+  async function handleChangeCheckboxItem(isDone: boolean): Promise<void> {
+    editBoolTaskMutation.mutate(isDone);
   }
+  const editBoolTaskMutation = useMutation({
+    mutationFn: (isDone: boolean) => updateTaskCompleted(item.id, isDone),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+    },
+  });
 
   return (
     <li className="liTask">
@@ -46,13 +58,13 @@ export default function TodoItem({
           <Checkbox
             type="checkbox"
             checked={item.isDone ? true : false}
-            onChange={() => handleChangeCheckboxItem(item.id, item.isDone)}
+            onChange={() => handleChangeCheckboxItem(item.isDone)}
           />
           <span className="task">{item.title}</span>
           <button className="bDelete" onClick={() => setIsEdit(true)}>
             <EditOutlined />
           </button>
-          <button className="bDelete" onClick={() => handleDeleteTask(item.id)}>
+          <button className="bDelete" onClick={handleDeleteTask}>
             <CloseSquareOutlined />
           </button>
         </>

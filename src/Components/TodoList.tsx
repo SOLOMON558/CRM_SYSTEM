@@ -1,12 +1,10 @@
 import TodoItem from "./TodoItem";
 import { Todo } from "../types/type";
-import { List, Divider } from "antd";
+import { List} from "antd";
 interface TodoListTypes {
-  getAndUpdateTasks: () => Promise<void>;
   allTodo: Todo[];
 }
 export default function TodoList({
-  getAndUpdateTasks,
   allTodo,
 }: TodoListTypes): JSX.Element {
   return (
@@ -22,7 +20,6 @@ export default function TodoList({
               {
                 <li className="liTask">
                   <TodoItem
-                    getAndUpdateTasks={getAndUpdateTasks}
                     key={item.id}
                     item={item}
                   />

@@ -1,24 +1,29 @@
 import { postTask } from "../api/Api";
 import { Input, Form, Button } from "antd";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  TodoRequest,
+} from "../types/type";
 
-interface AddTaskTypes {
-  getAndUpdateTasks: () => Promise<void>;
-}
-
-export default function AddTask({
-  getAndUpdateTasks,
-}: AddTaskTypes): JSX.Element {
+export default function AddTask(): JSX.Element {
+  const queryClient = useQueryClient();
   const [form] = Form.useForm();
 
   async function handleAddTask(value: { task: string }) {
     const newTask = value.task;
     if (newTask.length >= 2 && newTask.length < 64) {
       const data = { isDone: false, title: newTask };
-      await postTask(data);
-      await getAndUpdateTasks();
-      form.resetFields();
+      addTaskMutation.mutate(data);
     }
   }
+  const addTaskMutation = useMutation({
+    mutationFn: (data: TodoRequest) => postTask(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      form.resetFields();
+    },
+  });
+
   return (
     <Form
       form={form}
