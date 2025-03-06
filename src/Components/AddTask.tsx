@@ -1,4 +1,4 @@
-import { postTask } from "../api/Api";
+import { postTask } from "../api/api";
 import { Input, Form, Button } from "antd";
 
 interface AddTaskTypes {
@@ -12,12 +12,10 @@ export default function AddTask({
 
   async function handleAddTask(value: { task: string }) {
     const newTask = value.task;
-    if (newTask.length >= 2 && newTask.length < 64) {
       const data = { isDone: false, title: newTask };
       await postTask(data);
       await getAndUpdateTasks();
       form.resetFields();
-    }
   }
   return (
     <Form

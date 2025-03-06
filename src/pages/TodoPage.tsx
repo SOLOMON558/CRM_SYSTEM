@@ -1,10 +1,20 @@
 import { useState, useEffect } from "react";
-import { getTasks } from "../api/Api";
+import { getTasks } from "../api/api";
 import TodoList from "../components/TodoList";
 import AddTask from "../components/AddTask";
 import TabsList from "../components/TabsList";
 import { StatusType, Todo, TodoInfo } from "../types/type";
-import Drawers from "../components/Drawer";
+import Menus from "../components/Menu";
+import { Flex, Layout } from "antd";
+
+const { Sider, Content } = Layout;
+
+const layoutStyle = {
+  borderRadius: 8,
+  overflow: "hidden",
+  width: "calc(50% - 8px)",
+  maxWidth: "calc(50% - 8px)",
+};
 
 export default function TodoPage() {
   const [allTodo, setAllTodo] = useState<Todo[]>([]);
@@ -40,17 +50,29 @@ export default function TodoPage() {
 
   return (
     <>
-      <AddTask getAndUpdateTasks={() => getAndUpdateTasks(currentStatusType)} />
-      <TabsList
-        getAndUpdateTasks={getAndUpdateTasks}
-        status={currentStatusType}
-        countTasks={countTasks}
-      />
-      <TodoList
-        allTodo={allTodo}
-        getAndUpdateTasks={() => getAndUpdateTasks(currentStatusType)}
-      />
-      <Drawers />
+      <Flex gap="middle" wrap>
+        <Layout style={layoutStyle}>
+          <Sider width="36%">
+            <Menus />
+          </Sider>
+          <Layout>
+            <Content className="content">
+              <AddTask
+                getAndUpdateTasks={() => getAndUpdateTasks(currentStatusType)}
+              />
+              <TabsList
+                getAndUpdateTasks={getAndUpdateTasks}
+                status={currentStatusType}
+                countTasks={countTasks}
+              />
+              <TodoList
+                allTodo={allTodo}
+                getAndUpdateTasks={() => getAndUpdateTasks(currentStatusType)}
+              />
+            </Content>
+          </Layout>
+        </Layout>
+      </Flex>
     </>
   );
 }

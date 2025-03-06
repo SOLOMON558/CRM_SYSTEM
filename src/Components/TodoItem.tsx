@@ -1,6 +1,6 @@
 import { Input, Form, Button } from "antd";
 import { useState } from "react";
-import { updateTaskTitle, deleteTask, updateTaskCompleted } from "../api/Api";
+import { updateTaskTitle, deleteTask, updateTaskCompleted } from "../api/api";
 import { Todo } from "../types/type";
 import { Checkbox } from "antd";
 import { CloseSquareOutlined, EditOutlined } from "@ant-design/icons";
@@ -18,14 +18,15 @@ export default function TodoItem({
 
   async function handleEditTask(values: { task: string }): Promise<void> {
     const title = values.task;
-    if (title.length > 2 && title.length < 64) {
-      await updateTaskTitle(item.id, title);
-      await getAndUpdateTasks();
-      setIsEdit(false);
-      form.resetFields();
-    }
+    await updateTaskTitle(item.id, title);
+    await getAndUpdateTasks();
+    setIsEdit(false);
+    form.resetFields();
   }
-
+  function startEditing() {
+    form.setFieldsValue({ task: item.title });
+    setIsEdit(true);
+  }
   async function handleDeleteTask(id: number): Promise<void> {
     await deleteTask(id);
     await getAndUpdateTasks();
@@ -40,7 +41,7 @@ export default function TodoItem({
   }
 
   return (
-    <li className="liTask">
+    <>
       {!isEdit ? (
         <>
           <Checkbox
@@ -48,8 +49,8 @@ export default function TodoItem({
             checked={item.isDone ? true : false}
             onChange={() => handleChangeCheckboxItem(item.id, item.isDone)}
           />
-          <span className="task">{item.title}</span>
-          <button className="bDelete" onClick={() => setIsEdit(true)}>
+          <span className="task liTask">{item.title}</span>
+          <button className="bDelete" onClick={startEditing}>
             <EditOutlined />
           </button>
           <button className="bDelete" onClick={() => handleDeleteTask(item.id)}>
@@ -82,6 +83,6 @@ export default function TodoItem({
           </Form>
         </>
       )}
-    </li>
+    </>
   );
 }

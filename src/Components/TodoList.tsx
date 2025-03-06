@@ -11,27 +11,23 @@ export default function TodoList({
 }: TodoListTypes): JSX.Element {
   return (
     <>
-      <ul>
-        <List
-          className="list"
-          size="small"
-          bordered={true}
-          dataSource={allTodo}
-          renderItem={(item) => (
-            <List.Item className="todoItemBlock">
-              {
-                <li className="liTask">
-                  <TodoItem
-                    getAndUpdateTasks={getAndUpdateTasks}
-                    key={item.id}
-                    item={item}
-                  />
-                </li>
-              }
-            </List.Item>
-          )}
-        />
-      </ul>
+      <List
+        className="list"
+        size="small"
+        bordered={true}
+        dataSource={allTodo}
+        renderItem={(item) => (
+          <List.Item className="todoItemBlock">
+            {
+              <TodoItem
+                getAndUpdateTasks={getAndUpdateTasks}
+                key={item.id}
+                item={item}
+              />
+            }
+          </List.Item>
+        )}
+      />
     </>
   );
 }

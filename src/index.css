@@ -12,7 +12,6 @@ input {
   text-align: left;
 }
 #buttonInput {
-  
   margin-left: 8px;
   height: 30px;
   background-color: dodgerblue;
@@ -27,23 +26,19 @@ input {
 }
 
 .task {
-  margin-left: 10px;
+  margin-left: 20px;
   font-family: Georgia, "Times New Roman", Times, serif;
   font-size: 22px;
+  height: 36px;
+  width: 350px;
 }
 .bDelete {
   background-color: rgba(28, 28, 28, 0);
   border: 0;
 }
-.liTask {
-  height: 36px;
-  width: 650px;
-  padding:0;
-  margin:0;
-  
-}
+
 .buttonTask {
-  color:#000;
+  color: #000;
   text-align: center;
   margin-left: 0;
   margin-top: 5px;
@@ -63,6 +58,8 @@ input {
   border: 20px;
 }
 .list {
-  
-  width: 350px;
+  width: 370px;
+}
+.content {
+  background-color: white;
 }
