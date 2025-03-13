@@ -1,7 +1,11 @@
 import { Input, Form, Button } from "antd";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { updateTaskTitle, deleteTask, updateTaskCompleted } from "../api/Api";
+import {
+  updateTaskTitle,
+  deleteTask,
+  updateTaskCompleted,
+} from "../api/apiTasks";
 import { Todo } from "../types/type";
 import { Checkbox } from "antd";
 import { CloseSquareOutlined, EditOutlined } from "@ant-design/icons";
@@ -9,18 +13,14 @@ interface TodoItemTypes {
   item: Todo;
 }
 
-export default function TodoItem({
-  item
-}: TodoItemTypes): JSX.Element {
+export default function TodoItem({ item }: TodoItemTypes): JSX.Element {
   const [form] = Form.useForm();
   const [isEdit, setIsEdit] = useState(false);
   const queryClient = useQueryClient();
 
   async function handleEditTask(values: { task: string }): Promise<void> {
     const title = values.task;
-    if (title.length > 2 && title.length < 64) {
-      editTitleTaskMutation.mutate(title);
-    }
+    editTitleTaskMutation.mutate(title);
   }
   const editTitleTaskMutation = useMutation({
     mutationFn: (title: string) => updateTaskTitle(item.id, title),
@@ -30,6 +30,11 @@ export default function TodoItem({
       form.resetFields();
     },
   });
+
+  function startEditing() {
+    form.setFieldsValue({ task: item.title });
+    setIsEdit(true);
+  }
 
   async function handleDeleteTask(): Promise<void> {
     deleteTaskMutation.mutate();
@@ -52,7 +57,7 @@ export default function TodoItem({
   });
 
   return (
-    <li className="liTask">
+    <>
       {!isEdit ? (
         <>
           <Checkbox
@@ -61,7 +66,7 @@ export default function TodoItem({
             onChange={() => handleChangeCheckboxItem(item.isDone)}
           />
           <span className="task">{item.title}</span>
-          <button className="bDelete" onClick={() => setIsEdit(true)}>
+          <button className="bDelete" onClick={startEditing}>
             <EditOutlined />
           </button>
           <button className="bDelete" onClick={handleDeleteTask}>
@@ -94,6 +99,6 @@ export default function TodoItem({
           </Form>
         </>
       )}
-    </li>
+    </>
   );
 }

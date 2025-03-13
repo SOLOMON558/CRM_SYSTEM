@@ -1,9 +1,7 @@
-import { postTask } from "../api/Api";
+import { postTask } from "../api/apiTasks";
 import { Input, Form, Button } from "antd";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  TodoRequest,
-} from "../types/type";
+import { TodoRequest } from "../types/type";
 
 export default function AddTask(): JSX.Element {
   const queryClient = useQueryClient();
@@ -11,10 +9,8 @@ export default function AddTask(): JSX.Element {
 
   async function handleAddTask(value: { task: string }) {
     const newTask = value.task;
-    if (newTask.length >= 2 && newTask.length < 64) {
-      const data = { isDone: false, title: newTask };
-      addTaskMutation.mutate(data);
-    }
+    const data = { isDone: false, title: newTask };
+    addTaskMutation.mutate(data);
   }
   const addTaskMutation = useMutation({
     mutationFn: (data: TodoRequest) => postTask(data),

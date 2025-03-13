@@ -10,8 +10,6 @@ export default function TabsList({
   status,
   countTasks,
 }: TabsListTypes): JSX.Element {
-
-  
   function handleCurrentStatusTabList(status: StatusType) {
     setStatus(status);
   }

@@ -35,13 +35,7 @@ input {
   background-color: rgba(28, 28, 28, 0);
   border: 0;
 }
-.liTask {
-  height: 36px;
-  width: 650px;
-  padding:0;
-  margin:0;
-  
-}
+
 .buttonTask {
   color:#000;
   text-align: center;
@@ -52,7 +46,20 @@ input {
   height: 30px;
   background-color: rgba(0, 0, 0, 0);
 }
-
+.task {
+  margin-left: 20px;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 22px;
+  height: 36px;
+  width: 350px;
+}
+.content {
+  background-color: white;
+}
+.list {
+  height: 500px;
+  background-color: white;
+}
 .activeButt {
   color: blue;
 }
@@ -62,7 +69,4 @@ input {
 .todoItemBlock {
   border: 20px;
 }
-.list {
-  
-  width: 350px;
-}
+
