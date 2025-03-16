@@ -7,7 +7,7 @@ import { Navigate, useNavigate } from "react-router";
 
 export default function HomePage() {
   const [userData, setUserData] = useState<ProfileRequest>();
-  const [accessToken, setAccessToken] = useState<string | null>(
+  const [accessToken, setAccessToken] = useState<string| null>(
     localStorage.getItem("accessToken")
   );
   const { Sider, Content } = Layout;
@@ -25,8 +25,7 @@ function handleLogoutProfile(){
 }
   useEffect(() => {
     async function getUserData() {
-      await setAccessToken(localStorage.getItem("accessToken"));
-      if (accessToken) {
+      await setAccessToken(localStorage.getItem("accessToken") || "");
         try {
           const userObjectData= await getDataUser(accessToken);
           if (userObjectData){
@@ -34,7 +33,6 @@ function handleLogoutProfile(){
         } catch (error) {
           console.log("Ошибка получения данных");
         }
-      }
     }
     getUserData();
   }, [accessToken]);
@@ -57,6 +55,7 @@ function handleLogoutProfile(){
                   <li>Имя: {userData.username}</li>
                   <li>Email: {userData.email}</li>
                   <li>PhoneNumber: {userData.phoneNumber}</li>
+                 
                 </ul>
                 <Button onClick={handleLogoutProfile}>LOGOUT</Button>
                 </>

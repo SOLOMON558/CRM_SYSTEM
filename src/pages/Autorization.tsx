@@ -81,13 +81,13 @@ export default function Autorization() {
     phoneNumber: string;
     prefix: string;
   }) {
-    const fullPhone = `${values.prefix}${values.phoneNumber}`;
+    const fullPhone = `${(values.prefix) ? values.prefix: "" }${(values.phoneNumber) ?values.phoneNumber: ""}`;
     const data = {
       login: values.login,
       username: values.username,
       password: values.password,
       email: values.email,
-      phoneNumber: fullPhone,
+      phoneNumber: fullPhone || "",
     };
     try {
       const result = await postDataUser(data);
@@ -173,6 +173,7 @@ export default function Autorization() {
               name="login"
               label="Login"
               rules={[
+                {pattern: /^[a-zA-Z]+$/, message: "Только латинские буквы!"},
                 { min: 2, message: "Минимум 2 символа!" },
                 { max: 60, message: "Максимум 60 символов!" },
                 {
@@ -188,6 +189,7 @@ export default function Autorization() {
               name="username"
               label="Username"
               rules={[
+                {pattern: /^[a-zA-Zа-яА-ЯёЁ]+$/, message: "Только латиница и киррилица"},
                 { min: 1, message: "Минимум 6 символов!" },
                 { max: 60, message: "Максимум 60 символов!" },
                 {
@@ -262,8 +264,7 @@ export default function Autorization() {
               name="phoneNumber"
               label="Phone Number"
               rules={[
-                { required: true, message: "Please confirm your phoneNumber!" },
-                { len: 10, message: "Номер состоит из 11 символов!" },
+                { pattern: /^[0-9]{10}$/, message: "Введите 10 цифр без пробелов и символов!" },
               ]}
             >
               <Input addonBefore={prefixSelector} style={{ width: "100%" }} />

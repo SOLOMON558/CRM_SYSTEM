@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router";
 import {
   MetaResponse,
   Todo,
@@ -98,7 +99,7 @@ export async function postDataUserSingin(
   try {
     const response = await apiInstanceV1.post<Token>("/auth/signin", dataUser);
     return { data: response.data, status: response.status };
-  } catch (error:any) {
+  } catch (error: any) {
     console.error(
       "Ошибка портирования данных",
       error.response?.data || error.message
@@ -116,42 +117,44 @@ export async function postRefreshForUpdateAccess(
       refreshToken
     );
     return response.data;
-  } catch (error:any) {
+  } catch (error: any) {
     console.log(error.response.status);
-    return null
-    
+    return null;
   }
 }
 
-export async function getDataUser(accessToken:string): Promise<{ data: Profile; status: number }| null> {
+export async function getDataUser(
+  accessToken: string
+): Promise<{ data: Profile; status: number } | null> {
   try {
     const response = await apiInstanceV1.get<Profile>("/user/profile", {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     return { data: response.data, status: response.status };
-  } catch (error:any) {
+  } catch (error: any) {
     if (error.response.status === 401) {
       try {
         console.log("Ошибка токена 401, перезапрашиваю...");
         const refreshToken = localStorage.getItem("refreshToken");
-        if (refreshToken){
-        const response = await postRefreshForUpdateAccess({
-          refreshToken: refreshToken,
-        });
-        if (response){
-        localStorage.setItem("accessToken", response.accessToken);
-        localStorage.setItem("refreshToken", response.refreshToken);
-        const accessToken = localStorage.getItem("accessToken")
-        if (accessToken) {
-          await getDataUser(accessToken);}}
-      }} catch {
+        if (refreshToken) {
+          const response = await postRefreshForUpdateAccess({
+            refreshToken: refreshToken,
+          });
+          if (response) {
+            localStorage.setItem("accessToken", response.accessToken);
+            localStorage.setItem("refreshToken", response.refreshToken);
+            const accessToken = localStorage.getItem("accessToken");
+            if (accessToken) {
+              await getDataUser(accessToken);
+            }
+          }
+        }
+      } catch {
         console.log("Ошибка перезапроса данных");
-        
       }
     } else {
       console.log("ошибка не 401");
-      
     }
-    return null
+    return null;
   }
 }
