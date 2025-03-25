@@ -1,9 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
-import statusReducer from "./Slice";
+import statusSlice from "./Slice";
+import authSlice from "./isAuthSlice"
+import accessTokenSlice from "./accessTokenSlice";
 
 const store = configureStore({
   reducer: {
-    status: statusReducer,
+    status: statusSlice,
+    autorization: authSlice,
+    accessToken: accessTokenSlice,
   },
 });
 

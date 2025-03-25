@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { LockOutlined, LogoutOutlined } from "@ant-design/icons";
+import { LockOutlined, } from "@ant-design/icons";
 import { Button, Form, Input, Flex } from "antd";
 import "@ant-design/v5-patch-for-react-19";
+import {  useDispatch,useSelector } from "react-redux";
 
 import { Select } from "antd";
 import { getDataUser, postDataUser, postDataUserSingin } from "../api/apiTasks";
 import { useNavigate } from "react-router";
+import { authActions } from "../store/isAuthSlice";
+import { accessTokenActions } from "../store/accessTokenSlice";
 
 const { Option } = Select;
 
@@ -34,25 +37,23 @@ const tailFormItemLayout = {
 };
 
 export default function Autorization() {
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const accessToken = useSelector(state=> state.accessToken.accessToken)
   useEffect(()=> {
-    const accessToken = localStorage.getItem("accessToken")
     console.log(accessToken)
-   
     async function checkAccessToken(accessToken:string | null) {
-      if (accessToken){
       const result = await getDataUser(accessToken)
       if (result) {
       try {
       if (result.status ===200) {
+        dispatch(authActions.setAuthStatusTrue())
         navigate("/profile")
       }}
       catch {
         console.log("Ошибка переноса на профиль")
       }
-    }}}
+    }}
     checkAccessToken(accessToken)
 
   },[])
@@ -65,7 +66,7 @@ export default function Autorization() {
     const userTokens = await postDataUserSingin(data);
     console.log(userTokens.status);
     if (userTokens.status === 200) {
-      await localStorage.setItem("accessToken", userTokens.data.accessToken);
+      await dispatch(accessTokenActions.setAccessToken(userTokens.data.accessToken))
       await localStorage.setItem("refreshToken", userTokens.data.refreshToken);
       navigate("/todo");
     } else {

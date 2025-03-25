@@ -1,4 +1,5 @@
-import { useNavigate } from "react-router";
+import { Dispatch } from '@reduxjs/toolkit';
+
 import {
   MetaResponse,
   Todo,
@@ -12,6 +13,10 @@ import {
   RefreshToken,
 } from "../types/type";
 import axios from "axios";
+
+import { useDispatch, useSelector } from "react-redux";
+import { accessTokenActions } from "../store/accessTokenSlice";
+import { authActions } from '../store/isAuthSlice';
 
 const apiInstanceV1 = axios.create({
   baseURL: "https://easydev.club/api/v1",
@@ -111,20 +116,26 @@ export async function postDataUserSingin(
 export async function postRefreshForUpdateAccess(
   refreshToken: RefreshToken
 ): Promise<Token | null> {
+  console.log("Зашли в рефреш ", refreshToken)
   try {
     const response = await apiInstanceV1.post<Token>(
       "/auth/refresh",
       refreshToken
     );
+   
     return response.data;
   } catch (error: any) {
-    console.log(error.response.status);
+    
+    console.error(
+      "Ошибка обновления токена:",
+      error.response?.data || error.message
+    );
     return null;
   }
 }
 
 export async function getDataUser(
-  accessToken: string
+  accessToken: string,
 ): Promise<{ data: Profile; status: number } | null> {
   try {
     const response = await apiInstanceV1.get<Profile>("/user/profile", {
@@ -137,16 +148,13 @@ export async function getDataUser(
         console.log("Ошибка токена 401, перезапрашиваю...");
         const refreshToken = localStorage.getItem("refreshToken");
         if (refreshToken) {
-          const response = await postRefreshForUpdateAccess({
-            refreshToken: refreshToken,
-          });
+          console.log("Перезапрос", refreshToken)
+          const data = {refreshToken: refreshToken}
+          const response = await postRefreshForUpdateAccess(data);
+          console.log("Ответ", response)
           if (response) {
-            localStorage.setItem("accessToken", response.accessToken);
             localStorage.setItem("refreshToken", response.refreshToken);
-            const accessToken = localStorage.getItem("accessToken");
-            if (accessToken) {
-              await getDataUser(accessToken);
-            }
+            await getDataUser(response.accessToken);
           }
         }
       } catch {
