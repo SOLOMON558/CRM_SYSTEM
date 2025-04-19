@@ -9,6 +9,7 @@ const store = configureStore({
     autorization: authSlice,
     accessToken: accessTokenSlice,
   },
-});
+  
+},);
 
 export default store;

@@ -7,11 +7,11 @@ const initialIsAuth = {
     name: "autorization",
     initialState: initialIsAuth,
     reducers: {
-      setAuthStatusTrue: (state) => {
+      login: (state) => {
         state.isAuth = true
       },
-      setAuthStatusFalse: (state) => {
-        state.isAuth = !state.isAuth
+      logout: (state) => {
+        state.isAuth = false
       }
     }
   });

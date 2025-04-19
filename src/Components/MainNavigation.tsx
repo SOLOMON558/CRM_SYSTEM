@@ -19,14 +19,14 @@ const items: MenuItem[] = [
         children: [
           { key: "1", label: "TODO-LIST" },
           { key: "2", label: "PROFILE" },
-          { key: "3", label: "AUTORIZATION" },
+
         ],
       },
     ],
   },
 ];
 
-export default function Menus(): JSX.Element {
+export default function MainNavigation(): JSX.Element {
   const navigate = useNavigate();
   const onClick: MenuProps["onClick"] = (e) => {
     if (e.key === "1") {
@@ -34,9 +34,6 @@ export default function Menus(): JSX.Element {
     }
     if (e.key === "2") {
       navigate("/profile");
-    }
-    if (e.key === "3") {
-      navigate("/autoriz");
     }
   };
 
