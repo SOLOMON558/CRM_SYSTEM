@@ -5,8 +5,8 @@ import {
   updateTaskTitle,
   deleteTask,
   updateTaskCompleted,
-} from "../Api/apiTasksTodo";
-import { Todo } from "../types/type";
+} from "../api/todos";
+import { Todo } from "../types/todos";
 import { Checkbox } from "antd";
 import { CloseSquareOutlined, EditOutlined } from "@ant-design/icons";
 interface TodoItemTypes {

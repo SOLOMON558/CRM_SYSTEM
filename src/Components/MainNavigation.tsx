@@ -1,4 +1,4 @@
-import { MailOutlined } from "@ant-design/icons";
+
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
 
@@ -7,23 +7,8 @@ import { useNavigate } from "react-router-dom";
 type MenuItem = Required<MenuProps>["items"][number];
 
 const items: MenuItem[] = [
-  {
-    key: "sub1",
-    label: "CRM_TODO",
-    icon: <MailOutlined />,
-    children: [
-      {
-        key: "g1",
-        label: "ВЫБОР СТРАНИЦЫ",
-        type: "group",
-        children: [
-          { key: "1", label: "TODO-LIST" },
-          { key: "2", label: "PROFILE" },
-
-        ],
-      },
-    ],
-  },
+  { key: "1", label: "TODO-LIST" },
+  { key: "2", label: "PROFILE" },
 ];
 
 export default function MainNavigation(): JSX.Element {

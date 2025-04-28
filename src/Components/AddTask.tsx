@@ -1,7 +1,7 @@
-import { postTask } from "../Api/apiTasksTodo";
+import { postTask } from "../api/todos";
 import { Input, Form, Button } from "antd";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { TodoRequest } from "../types/type";
+import { TodoRequest } from "../types/todos";
 
 export default function AddTask(): JSX.Element {
   const queryClient = useQueryClient();

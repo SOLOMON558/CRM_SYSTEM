@@ -1,30 +1,22 @@
 import { useEffect, useState } from "react";
-
-import { getDataUser } from "../Api/apiTasksTodo";
-import { ProfileRequest } from "../types/type";
-import { Navigate, useNavigate } from "react-router";
-import { useSelector, useDispatch } from "react-redux";
-import { authActions } from "../store/isAuthSlice";
-import { accessTokenActions } from "../store/accessTokenSlice";
 import { Button } from "antd";
-import { getUserData, logoutUser } from "../Api/apiAuth";
-import { tokenService } from "../services/token.service";
+import { getUserData, logoutUser } from "../api/auth";
+import { ProfileRequest } from "../types/auth";
 
-export default function HomePage() {
-  const navigate = useNavigate()
-  const [userData, setUserData] = useState(false);
+export default function HomePage(): JSX.Element {
+  const [userData, setUserData] = useState<ProfileRequest | null>(null);
 
   useEffect(() => {
     async function userData() {
       const response = await getUserData();
       setUserData(response);
-      console.log("Мы в юзЭффекте")
+      console.log("Мы в юзЭффекте");
     }
     userData();
   }, []);
 
-  function handleLogoutProfile () {
-     logoutUser()
+  function handleLogoutProfile() {
+    logoutUser();
   }
 
   return (

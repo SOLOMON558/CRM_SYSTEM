@@ -4,22 +4,9 @@ import {
   TodoInfo,
   TodoRequest,
   StatusType,
-  UserRegistration,
-  Profile,
-  AuthData,
-  Token,
-  RefreshToken,
-} from "../types/type";
+} from "../types/todos";
 import axios from "axios";
 
-let accessToken = "";
-const apiInstanceV1 = axios.create({
-  baseURL: "https://easydev.club/api/v1",
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${accessToken}`,
-  },
-});
 const apiInstance = axios.create({
   baseURL: "https://easydev.club/api/v1",
   headers: {

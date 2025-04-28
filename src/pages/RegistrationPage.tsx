@@ -1,8 +1,9 @@
 import { Button, Form, Input, Select } from "antd";
-import { UserRegistration } from "../types/type";
-import { postDataSignupUser } from "../Api/apiAuth";
-import { redirect, useNavigate, useNavigation } from "react-router-dom";
-import { tryLoginUser, tryPostDataUser } from "../Api/helpersFunction";
+import { UserRegistration } from "../types/auth";
+
+import {  useNavigate } from "react-router-dom";
+import { postDataSignupUser } from "../api/auth";
+
 
 const { Option } = Select;
 
@@ -30,7 +31,7 @@ const tailFormItemLayout = {
   },
 };
 
-export default function Registration() {
+export default function Registration(): JSX.Element {
   const [form] = Form.useForm();
   const navigate = useNavigate()
   async function onFinish(values: UserRegistration) {
@@ -47,7 +48,7 @@ export default function Registration() {
       email: values.email,
       phoneNumber: phoneNumber,
     };
-    if (await tryLoginUser(dataSignupUser)==="Успешная регистрация"){
+    if (await postDataSignupUser(dataSignupUser)==="Успешная регистрация"){
       navigate("/signin")
     };
     
@@ -174,4 +175,4 @@ export default function Registration() {
     </Form>
   );
 }
-export async function action() {}
+

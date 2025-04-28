@@ -1,17 +1,17 @@
 class TokenService {
-    private accessToken: string | null = null;
-  
-    getAccessToken() {
-      return this.accessToken;
-    }
-  
-    setAccessToken(token: string) {
-      this.accessToken = token;
-    }
-  
-    clearAccessToken() {
-      this.accessToken = null;
-    }
+  private localAccessToken: string | null = null;
+
+  get accessToken(): string | null {
+    return this.localAccessToken;
   }
-  
-  export const tokenService = new TokenService();
+
+  set accessToken(token: string | null) {
+    this.localAccessToken = token;
+  }
+
+  clearAccessToken() {
+    this.localAccessToken = null;
+  }
+}
+
+export const tokenService = new TokenService();

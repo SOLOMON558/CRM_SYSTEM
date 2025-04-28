@@ -1,9 +1,7 @@
 import { Flex, Layout } from "antd";
 import MainNavigation from "../Components/MainNavigation";
-import { Outlet, useNavigate } from "react-router";
-import { useEffect } from "react";
-import { getUserData } from "../Api/apiAuth";
-import { checkAccessToken } from "../Api/helpersFunction";
+import { Outlet} from "react-router";
+
 const { Sider, Content } = Layout;
 
 const layoutStyle = {
@@ -12,10 +10,8 @@ const layoutStyle = {
   width: "calc(50% - 8px)",
   maxWidth: "calc(50% - 8px)",
 };
-export default function RootLayout() {
-  const navigate = useNavigate();
-
-
+export default function RootLayout(): JSX.Element {
+  
 
   return (
     <Flex gap="middle" wrap>
