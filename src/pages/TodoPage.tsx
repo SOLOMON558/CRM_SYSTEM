@@ -7,7 +7,11 @@ import { Todo, TodoInfo } from "../types/todos.js";
 import { setStatus } from "../store/Slice.js";
 import { useDispatch, useSelector } from "react-redux";
 
+
 export default function TodoPage(): JSX.Element {
+  
+
+
   const dispatch = useDispatch();
   const currentStatusType = useSelector(
     (state: any) => state.status.currentStatusType

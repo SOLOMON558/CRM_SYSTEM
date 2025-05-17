@@ -1,39 +1,52 @@
-import { useEffect, useState } from "react";
+import { useDebugValue, useEffect, useState } from "react";
 import { Button } from "antd";
 import { getUserData, logoutUser } from "../api/auth";
 import { ProfileRequest } from "../types/auth";
+import { useDispatch, useSelector } from "react-redux";
+import { stuffActions } from "../store/isStuff";
+import { fetchUserData } from "../store/userData";
+import { authActions } from "../store/isAuthSlice";
 
 export default function HomePage(): JSX.Element {
   const [userData, setUserData] = useState<ProfileRequest | null>(null);
-
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.userData.userData);
+  const status = useSelector((state) => state.userData.status);
   useEffect(() => {
-    async function userData() {
-      const response = await getUserData();
-      setUserData(response);
-      console.log("Мы в юзЭффекте");
+    function usersDataProfiles() {
+      setUserData(user);
     }
-    userData();
-  }, []);
+    usersDataProfiles();
+  }, [status]);
 
-  function handleLogoutProfile() {
-    logoutUser();
+  async function handleLogoutProfile() {
+    const response = await logoutUser();
+    if(response.answer==="deleted") {
+      dispatch(authActions.logout());
+    }
   }
 
   return (
     <>
-      <h1 style={{ marginLeft: 20, fontSize: 40 }}>Профиль</h1>
-      <h2>Данные профиля:</h2>
-      {userData ? (
+      {status === "succeeded" ? (
         <>
-          <ul>
-            <li>Имя: {userData.username}</li>
-            <li>Email: {userData.email}</li>
-            <li>PhoneNumber: {userData.phoneNumber}</li>
-          </ul>
-          <Button onClick={handleLogoutProfile}>LOGOUT</Button>
+          <h1 style={{ marginLeft: 20, fontSize: 40 }}>Профиль</h1>
+          <h2>Данные профиля:</h2>
+          {userData ? (
+            <>
+              <ul>
+                <li>Имя: {userData.username}</li>
+                <li>Email: {userData.email}</li>
+                <li>PhoneNumber: {userData.phoneNumber}</li>
+              </ul>
+              <Button onClick={handleLogoutProfile}>LOGOUT</Button>
+            </>
+          ) : (
+            <p>Загрузка данных...</p>
+          )}
         </>
       ) : (
-        <p>Загрузка данных...</p>
+        <h1>"Жди бля"</h1>
       )}
     </>
   );

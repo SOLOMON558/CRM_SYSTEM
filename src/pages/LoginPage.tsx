@@ -9,12 +9,15 @@ import React, { useMemo, useState } from "react";
 import { RadiusUprightOutlined } from "@ant-design/icons";
 import { Button, Divider, notification, Space } from "antd";
 import type { NotificationArgsProps } from "antd";
-
+import { useDispatch } from "react-redux";
+import { stuffActions} from "../store/isStuff"
+import { authActions } from "../store/isAuthSlice";
 type NotificationPlacement = NotificationArgsProps["placement"];
 
 const Context = React.createContext({ name: "Default" });
 
 export default function Login(): JSX.Element {
+  const dispatch = useDispatch() 
   const [isError, setIsError] = useState(false);
   const [api, contextHolder] = notification.useNotification();
 
@@ -34,8 +37,13 @@ export default function Login(): JSX.Element {
       const responseData = await postDataSigninUser(dataSigninUser);
 
       if (responseData !== null) {
-        tokenService.accessToken=responseData.accessToken;
+        dispatch(authActions.login())
+        tokenService.accessToken=responseData?.accessToken;
+
         //проверил, устанавливаем
+
+        
+
         navigate("/profile");
       }
     } catch (error: any) {

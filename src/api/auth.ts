@@ -1,8 +1,9 @@
 import axios from "axios";
-import store from "../store/store";
+
 import { tokenService } from "../services/token.service";
 import { authActions } from "../store/isAuthSlice";
 import { AuthData, UserRegistration } from "../types/auth";
+import { stuffActions } from "../store/isStuff";
 // ЕСЛИ НЕ ВПАДЛУ МОЖНО В ИНТЕРСЕПТОР АКСИОС РЕТРАЙ СДЕЛАТЬ
 const instanceAuth = axios.create({
   baseURL: "https://easydev.club/api/v1",
@@ -10,7 +11,7 @@ const instanceAuth = axios.create({
 
 instanceAuth.interceptors.request.use(
   (config) => {
-    const token = tokenService.accessToken; 
+    const token = tokenService.accessToken;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -43,7 +44,8 @@ export async function postDataSigninUser(dataSigninUser: AuthData) {
     if (response.request.status === 200) {
       alert("Успешный вход");
       localStorage.setItem("refreshToken", response.data.refreshToken);
-      store.dispatch(authActions.login());
+      localStorage.setItem("acess", response.data.accessToken);
+
       return response.data;
     }
   } catch (error: any) {
@@ -67,6 +69,7 @@ export async function getUserData(first: boolean = true) {
     console.log("Взяли токен для данных", token);
     const response = await instanceAuth.get("/user/profile");
     console.log(response);
+
     return response.data;
   } catch (error: any) {
     if (error.status === 401 && first) {
@@ -86,9 +89,10 @@ export async function refreshAccessToken() {
         refreshToken: refreshToken,
       });
       console.log(response);
-      tokenService.accessToken=response.data.accessToken;
+      tokenService.accessToken = response.data.accessToken;
       localStorage.setItem("refreshToken", response.data.refreshToken);
     } else {
+      console.log("Рефреша нет в локале");
       logoutUser();
     }
   } catch (error) {
@@ -100,6 +104,8 @@ export async function refreshAccessToken() {
 export async function logoutUser() {
   tokenService.clearAccessToken();
   localStorage.removeItem("refreshToken");
-  store.dispatch(authActions.logout());
+
+  // store.dispatch(authActions.logout());
   window.location.href = "/signin";
+  return { answer: "deleted" };
 }
