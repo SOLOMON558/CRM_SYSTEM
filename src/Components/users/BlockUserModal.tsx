@@ -7,6 +7,9 @@ import { fetchUsers } from "../../store/users";
 export function BlockUserModal() {
   const currentUser = useSelector((state) => state.modal.currentUser);
   const currentModal = useSelector((state) => state.modal.activeModal);
+  const sortByStore = useSelector((state) => state.users.sortBy);
+  const sortOrderStore = useSelector((state) => state.users.sortOrder);
+  const sortBlockedStore = useSelector((state) => state.users.isBlocked);
   const dispatch = useDispatch();
 
   const handleOkBlocked = async () => {

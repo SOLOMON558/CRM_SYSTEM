@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import {  Input, Form } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers } from "../store/users";
+import { fetchUsers, usersActions } from "../store/users";
 import { useLocation, useNavigate, useNavigationType } from "react-router";
 import {  MonitorOutlined} from "@ant-design/icons";
-import { AssignRolesModal } from "../Components/users/AssignRolesModal";
+import { AssignRolesModal } from "../Components/users/assignRolesModals/AssignRolesModal";
 import { DeleteUserModal } from "../Components/users/DeleteUserModal";
 import { BlockUserModal } from "../Components/users/BlockUserModal";
 import { TableWithUsers } from "../Components/users/TableWithUsers";
@@ -18,6 +18,7 @@ function UsersPage() {
   const dispatch = useDispatch();
   const users = useSelector((state) => state.users.list);
   const status = useSelector((state) => state.users.status);
+  const error = useSelector((state) => state.users.error);
   const navigationType = useNavigationType();
   const location = useLocation();
   const navigate = useNavigate()
@@ -32,7 +33,7 @@ function UsersPage() {
   useEffect(() => {
     async function usersDataProfiles() {
       if(status==="failed") {
-        console.log("Ошибка/не админ")
+        console.log("Ошибка/не админ", error)
         navigate("/profile")
       }
       if (status === "succeeded") {
@@ -59,8 +60,9 @@ function UsersPage() {
 
   async function handleSearchUser(values) {
     const search = values.search;
+    dispatch(usersActions.setSearch(search))
     try {
-      await dispatch(fetchUsers({ search }));
+      dispatch(fetchUsers());
       console.log("Получилось найти");
     } catch (error) {
       console.log("Не получилось найти", error);

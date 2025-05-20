@@ -6,11 +6,14 @@ import { useState } from "react";
 import { fetchUsers, usersActions } from "../../store/users";
 import { DownOutlined, UpOutlined } from "@ant-design/icons";
 
-export function TableWithUsers({normalizedDataProfiles}) {
+export function TableWithUsers({ normalizedDataProfiles }) {
   const isAdmin = useSelector((state: any) => state.stuff.isAdmin);
   const navigate = useNavigate();
-  const [blocked, setBlocked] = useState(false);
+
   const dispatch = useDispatch();
+  const sortByStore = useSelector((state) => state.users.sortBy);
+  const sortOrderStore = useSelector((state) => state.users.sortOrder);
+  const sortBlockedStore = useSelector((state) => state.users.isBlocked);
 
   interface DataType {
     key: string;
@@ -35,30 +38,45 @@ export function TableWithUsers({normalizedDataProfiles}) {
     dispatch(modalActions.openModal("roles"));
   };
 
-  async function handleSortByBlocked() {
-    setBlocked(!blocked);
-    const isBlocked = blocked;
-    await dispatch(fetchUsers({ isBlocked }));
+  async function handleSortByBlocked(status) {
+    let isBlocked = "";
+
+    if (status === "unBlocked") {
+      isBlocked = "false";
+    }
+    if (status === "blocked") {
+      isBlocked = "true";
+    }
+    dispatch(usersActions.setSortBy(""));
+    dispatch(usersActions.setSortOrder(""));
+    dispatch(usersActions.setBlocked(isBlocked));
+    console.log(dispatch(usersActions.setBlocked(isBlocked)));
+    dispatch(fetchUsers());
   }
+
   async function handleSortByUserName(sortBy, sortOrder) {
     console.log(sortBy, sortOrder, "в хандле");
+    dispatch(usersActions.setSortBy(sortBy));
+    dispatch(usersActions.setSortOrder(sortOrder));
+    dispatch(usersActions.setBlocked(""));
+
     try {
-      await dispatch(fetchUsers({ sortBy, sortOrder }));
+      dispatch(fetchUsers());
       console.log("Получилось отфильтровать по имени");
     } catch (error) {
       console.log("Не получилось отфильтровать по имени", error);
     }
   }
 
-    const columns = [
+  const columns = [
     {
       title: (
         <>
-          <Button onClick={() => handleSortByUserName("username", "asc")}>
+          <Button style={{ color: (sortByStore === "username" ) ? "blue" : "grey"}} onClick={() => handleSortByUserName("username", "asc")}>
             "Имя"
           </Button>{" "}
-          <UpOutlined onClick={() => handleSortByUserName("username", "asc")} />{" "}
-          <DownOutlined
+          <UpOutlined style={{ color:(sortByStore === "username" && sortOrderStore === "asc" ) ? "blue" : "grey"}} onClick={() => handleSortByUserName("username", "asc")} />{" "}
+          <DownOutlined style={{ color:(sortByStore === "username" && sortOrderStore === "desc" ) ? "blue" : "grey"}}
             onClick={() => handleSortByUserName("username", "desc")}
           />
         </>
@@ -70,11 +88,11 @@ export function TableWithUsers({normalizedDataProfiles}) {
     {
       title: (
         <>
-          <Button onClick={() => handleSortByUserName("email", "asc")}>
+          <Button style={{ color: (sortByStore === "email") ? "blue" : "grey"}} onClick={() => handleSortByUserName("email", "asc")}>
             "Email"
           </Button>{" "}
-          <UpOutlined onClick={() => handleSortByUserName("email", "asc")} />{" "}
-          <DownOutlined onClick={() => handleSortByUserName("email", "desc")} />
+          <UpOutlined style={{ color: (sortByStore === "email" && sortOrderStore === "asc" ) ? "blue" : "grey"}} onClick={() => handleSortByUserName("email", "asc")} />{" "}
+          <DownOutlined  style={{ color: (sortByStore === "email" && sortOrderStore === "desc" ) ? "blue" : "grey"}} onClick={() => handleSortByUserName("email", "desc")} />
         </>
       ),
       dataIndex: "email",
@@ -98,7 +116,26 @@ export function TableWithUsers({normalizedDataProfiles}) {
     },
     {
       title: isAdmin ? (
-        <Button onClick={handleSortByBlocked}>"isBlocked"</Button>
+        <>
+          <Button
+            type={sortBlockedStore === "" ? "primary" : "default"}
+            onClick={() => handleSortByBlocked("all")}
+          >
+            Все
+          </Button>
+          <Button
+            type={sortBlockedStore === "false" ? "primary" : "default"}
+            onClick={() => handleSortByBlocked("unBlocked")}
+          >
+            Не заблокированные
+          </Button>
+          <Button
+            type={sortBlockedStore === "true" ? "primary" : "default"}
+            onClick={() => handleSortByBlocked("blocked")}
+          >
+            Заблокированные
+          </Button>
+        </>
       ) : (
         "isBlocked"
       ),
@@ -163,10 +200,10 @@ export function TableWithUsers({normalizedDataProfiles}) {
       key: "profile",
     },
   ];
-  return(
+  return (
     <Table<DataType>
-        columns={columns}
-        dataSource={normalizedDataProfiles as any}
-      />
-  )
+      columns={columns}
+      dataSource={normalizedDataProfiles as any}
+    />
+  );
 }

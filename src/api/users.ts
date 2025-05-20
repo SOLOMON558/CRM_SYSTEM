@@ -5,6 +5,7 @@ import { authActions } from "../store/isAuthSlice";
 import { AuthData, UserRegistration } from "../types/auth";
 import { stuffActions } from "../store/isStuff";
 import { getUserData, refreshAccessToken } from "./auth";
+import { Roles, UserFilters, UserRequest, UserRolesRequest } from "../types/users";
 
 const instanceUsers = axios.create({
   baseURL: "https://easydev.club/api/v1",
@@ -24,7 +25,7 @@ instanceUsers.interceptors.request.use(
   }
 );
 
-export async function getUsersProfile(sortBy = "id", sortOrder = "asc",isBlocked="", search="", first = true) {
+export async function getUsersProfile(sortBy = "id", sortOrder = "asc",isBlocked="", search="" , first = true) {
   console.log(sortBy, sortOrder, "В гет юзере")
   try {
     const response = await instanceUsers.get(
@@ -55,11 +56,11 @@ export async function unBlockedUsersProfile(id:number) {
   const response = await instanceUsers.post(`/admin/users/${id}/unblock`);
   return response;
 }
-export async function editProfileUser(id, userData) {
+export async function editProfileUser(id: number, userData:UserRequest) {
   const response = await instanceUsers.put(`/admin/users/${id}`, userData);
   return response;
 }
-export async function editRoleUser(id, roles) {
+export async function editRoleUser(id:number, roles:UserRolesRequest ) {
   const response = await instanceUsers.post(`/admin/users/${id}/rights`, {
     roles: roles,
   });
@@ -69,13 +70,13 @@ export async function editRoleUser(id, roles) {
 
 
 
-export async function getUserProfileById(id,first = true) {
+export async function getUserProfileById(id:number,first = true) {
   try {
     const response = await instanceUsers.get(
       `/admin/users/${id}`
     );
     return response.data;
-  } catch (error) {
+  } catch (error:any) {
     if (error.status === 401 && first) {
       await refreshAccessToken();
       return await getUserProfileById(id, false);

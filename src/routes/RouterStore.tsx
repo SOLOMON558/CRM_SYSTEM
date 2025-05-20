@@ -7,7 +7,6 @@ import Login from "../pages/LoginPage";
 import Registration from "../pages/RegistrationPage";
 import {
   checkAuthLoader,
-  checkIsAdminOrModer,
 } from "../services/loadersFunction";
 import AuthLayout from "../layout/Auth";
 import UsersPage from "../pages/UsersPage";
