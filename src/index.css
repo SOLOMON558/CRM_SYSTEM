@@ -11,7 +11,8 @@ input {
   border-bottom: 1px solid #000;
   text-align: left;
 }
-.buttonInput {
+#buttonInput {
+  
   margin-left: 8px;
   height: 30px;
   background-color: dodgerblue;
@@ -24,7 +25,9 @@ input {
   width: 25px;
   height: 25px;
 }
+
 .task {
+  margin-left: 10px;
   font-family: Georgia, "Times New Roman", Times, serif;
   font-size: 22px;
 }
@@ -32,12 +35,9 @@ input {
   background-color: rgba(28, 28, 28, 0);
   border: 0;
 }
-.liTask {
-  width: 350px;
-  background-color: rgb(240, 237, 237);
-  margin-bottom: 5px;
-}
+
 .buttonTask {
+  color:#000;
   text-align: center;
   margin-left: 0;
   margin-top: 5px;
@@ -46,10 +46,27 @@ input {
   height: 30px;
   background-color: rgba(0, 0, 0, 0);
 }
-
+.task {
+  margin-left: 20px;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 22px;
+  height: 36px;
+  width: 350px;
+}
+.content {
+  background-color: white;
+}
+.list {
+  height: 500px;
+  background-color: white;
+}
 .activeButt {
   color: blue;
 }
 .invis {
   display: none;
 }
+.todoItemBlock {
+  border: 20px;
+}
+
