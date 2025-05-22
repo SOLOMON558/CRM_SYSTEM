@@ -1,5 +1,5 @@
 import TodoItem from "./TodoItem";
-import { Todo } from "../types/type";
+import { Todo } from "../types/todos";
 import { List } from "antd";
 interface TodoListTypes {
   allTodo: Todo[];

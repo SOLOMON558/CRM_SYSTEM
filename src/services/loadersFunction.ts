@@ -7,6 +7,9 @@ export async function checkAuthLoader() {
   if (isAuth || isRefresh) {
     return null;
   } else {
+    console.log("Лоадер выкинул который токен проверяет")
     return redirect("/signin");
   }
 }
+
+

@@ -5,8 +5,13 @@ import HomePage from "../pages/HomePage";
 import Todo from "../pages/TodoPage";
 import Login from "../pages/LoginPage";
 import Registration from "../pages/RegistrationPage";
-import { checkAuthLoader } from "../services/loadersFunction";
+import {
+  checkAuthLoader,
+} from "../services/loadersFunction";
 import AuthLayout from "../layout/Auth";
+import UsersPage from "../pages/UsersPage";
+import { UserProfilePage } from "../pages/UserProfilePage";
+import ProtectedRoute from "./ProtectedRouter";
 
 export const router = createBrowserRouter([
   {
@@ -24,6 +29,22 @@ export const router = createBrowserRouter([
           {
             path: "todo",
             element: <Todo />,
+          },
+          {
+            path: "users",
+            element: (
+              <ProtectedRoute requiredRoles={["ADMIN", "MODERATOR"]}>
+                <UsersPage />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "users/:id",
+            element: (
+              <ProtectedRoute requiredRoles={["ADMIN", "MODERATOR"]}>
+                <UserProfilePage />
+              </ProtectedRoute>
+            ),
           },
         ],
       },

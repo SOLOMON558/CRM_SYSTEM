@@ -1,16 +1,14 @@
 import axios from "axios";
-import store from "../store/store";
 import { tokenService } from "../services/token.service";
-import { authActions } from "../store/isAuthSlice";
 import { AuthData, UserRegistration } from "../types/auth";
-// ЕСЛИ НЕ ВПАДЛУ МОЖНО В ИНТЕРСЕПТОР АКСИОС РЕТРАЙ СДЕЛАТЬ
+
 const instanceAuth = axios.create({
   baseURL: "https://easydev.club/api/v1",
 });
 
 instanceAuth.interceptors.request.use(
   (config) => {
-    const token = tokenService.accessToken; 
+    const token = tokenService.accessToken;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -18,6 +16,31 @@ instanceAuth.interceptors.request.use(
     return config;
   },
   (error) => {
+    return Promise.reject(error);
+  }
+);
+
+instanceAuth.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const original = error.config;
+    console.log("ОРИГИНАЛ", original);
+    if (original.url.includes("/auth/refresh")) {
+      return logoutUser();
+    }
+    if (error.response?.status === 401 && !original._retry) {
+      original._retry = true;
+      try {
+        await refreshAccessToken();
+        const newToken = tokenService.accessToken;
+        original.headers.Authorization = `Bearer ${newToken}`;
+        return instanceAuth(original);
+      } catch (error) {
+        console.log("Не получилось рефрешнуть");
+        return Promise.reject(error);
+      }
+    }
+    console.log("Ошибка не 401");
     return Promise.reject(error);
   }
 );
@@ -43,7 +66,8 @@ export async function postDataSigninUser(dataSigninUser: AuthData) {
     if (response.request.status === 200) {
       alert("Успешный вход");
       localStorage.setItem("refreshToken", response.data.refreshToken);
-      store.dispatch(authActions.login());
+      localStorage.setItem("acess", response.data.accessToken);
+
       return response.data;
     }
   } catch (error: any) {
@@ -67,13 +91,10 @@ export async function getUserData(first: boolean = true) {
     console.log("Взяли токен для данных", token);
     const response = await instanceAuth.get("/user/profile");
     console.log(response);
+
     return response.data;
   } catch (error: any) {
-    if (error.status === 401 && first) {
-      console.log("Зашли в ошибку");
-      await refreshAccessToken();
-      return await getUserData(false);
-    }
+    console.log("Ошибка получения пользователя profile");
   }
 }
 
@@ -86,9 +107,10 @@ export async function refreshAccessToken() {
         refreshToken: refreshToken,
       });
       console.log(response);
-      tokenService.accessToken=response.data.accessToken;
+      tokenService.accessToken = response.data.accessToken;
       localStorage.setItem("refreshToken", response.data.refreshToken);
     } else {
+      console.log("Рефреша нет в локале");
       logoutUser();
     }
   } catch (error) {
@@ -100,6 +122,8 @@ export async function refreshAccessToken() {
 export async function logoutUser() {
   tokenService.clearAccessToken();
   localStorage.removeItem("refreshToken");
-  store.dispatch(authActions.logout());
+
+  // store.dispatch(authActions.logout());
   window.location.href = "/signin";
+  return { answer: "deleted" };
 }

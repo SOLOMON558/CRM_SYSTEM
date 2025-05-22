@@ -1,12 +1,9 @@
 import { Button, Form, Input, Select } from "antd";
 import { UserRegistration } from "../types/auth";
-
 import {  useNavigate } from "react-router-dom";
 import { postDataSignupUser } from "../api/auth";
 
-
 const { Option } = Select;
-
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
