@@ -1,3 +1,5 @@
+import { Roles } from "../Components/users/assignRolesModals/AssignRolesModal";
+
 export interface UserFilters {
   search?: string;
   sortBy?: string;
@@ -41,8 +43,3 @@ export interface UserRequest {
   phoneNumber?: string;
 }
 
-export enum Roles {
-  ADMIN = "ADMIN",
-  MODERATOR = "MODERATOR",
-  USER = "USER",
-}

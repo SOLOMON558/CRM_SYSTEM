@@ -1,11 +1,7 @@
 import axios from "axios";
-import store from "../store/store";
 import { tokenService } from "../services/token.service";
-import { authActions } from "../store/isAuthSlice";
-import { AuthData, UserRegistration } from "../types/auth";
-import { stuffActions } from "../store/isStuff";
-import { getUserData, refreshAccessToken } from "./auth";
-import { Roles, UserFilters, UserRequest, UserRolesRequest } from "../types/users";
+import { refreshAccessToken } from "./auth";
+import { UserFilters, UserRequest, UserRolesRequest } from "../types/users";
 
 const instanceUsers = axios.create({
   baseURL: "https://easydev.club/api/v1",
@@ -20,47 +16,66 @@ instanceUsers.interceptors.request.use(
     config.headers.accept = "application/json";
     return config;
   },
-  (error) => {
+  async (error) => {
     return Promise.reject(error);
   }
 );
 
-export async function getUsersProfile(sortBy = "id", sortOrder = "asc",isBlocked="", search="" , first = true) {
-  console.log(sortBy, sortOrder, "В гет юзере")
+instanceUsers.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const original = error.config;
+    if (error.response?.status === 401 && !original._retry) {
+      original._retry = true;
+      try {
+        await refreshAccessToken();
+
+        const newToken = tokenService.accessToken;
+        original.headers.Authorization = `Bearer ${newToken}`;
+        return instanceUsers(original);
+      } catch (error) {
+        console.log("Не получилось рефрешнуть");
+        return Promise.reject(error);
+      }
+    }
+    console.log("Ошибка не 401");
+    return Promise.reject(error);
+  }
+);
+
+export async function getUsersProfile({
+  sortBy = "id",
+  sortOrder = "asc",
+  isBlocked = "",
+  search = "",
+}: UserFilters) {
   try {
     const response = await instanceUsers.get(
       `/admin/users?sortBy=${sortBy}&sortOrder=${sortOrder}&limit=1000&isBlocked=${isBlocked}&search=${search}`
     );
     console.log("гет юзерс отправлен", response);
     return response.data;
-  } catch (error:any) {
-    if (error.status === 401 && first) {
-      console.log("Зашли в ошибку");
-      await refreshAccessToken();
-      return await getUsersProfile(sortBy, sortOrder, false);
-    }
-    else {
-      throw Error("Ошибка/Нет прав")
-    }
+  } catch (error: any) {
+    throw Error("Ошибка/Нет прав");
   }
 }
-export async function deleteUsersProfile(id:number) {
+export async function deleteUsersProfile(id: number) {
   const response = await instanceUsers.delete(`/admin/users/${id}`);
   return response;
 }
-export async function blockedUsersProfile(id:number) {
+export async function blockedUsersProfile(id: number) {
   const response = await instanceUsers.post(`/admin/users/${id}/block`);
   return response;
 }
-export async function unBlockedUsersProfile(id:number) {
+export async function unBlockedUsersProfile(id: number) {
   const response = await instanceUsers.post(`/admin/users/${id}/unblock`);
   return response;
 }
-export async function editProfileUser(id: number, userData:UserRequest) {
+export async function editProfileUser(id: number, userData: UserRequest) {
   const response = await instanceUsers.put(`/admin/users/${id}`, userData);
   return response;
 }
-export async function editRoleUser(id:number, roles:UserRolesRequest ) {
+export async function editRoleUser(id: number, roles: UserRolesRequest) {
   const response = await instanceUsers.post(`/admin/users/${id}/rights`, {
     roles: roles,
   });
@@ -68,18 +83,11 @@ export async function editRoleUser(id:number, roles:UserRolesRequest ) {
   return response;
 }
 
-
-
-export async function getUserProfileById(id:number,first = true) {
+export async function getUserProfileById(id: number) {
   try {
-    const response = await instanceUsers.get(
-      `/admin/users/${id}`
-    );
+    const response = await instanceUsers.get(`/admin/users/${id}`);
     return response.data;
-  } catch (error:any) {
-    if (error.status === 401 && first) {
-      await refreshAccessToken();
-      return await getUserProfileById(id, false);
-    }
+  } catch (error: any) {
+    console.log(error);
   }
 }

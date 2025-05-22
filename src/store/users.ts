@@ -1,10 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+
 import { getUsersProfile } from "../api/users";
 
-// Создаем thunk
 export const fetchUsers = createAsyncThunk(
-  "users/fetchUsers", // тип действия
+  "users/fetchUsers",
   async (arg = {}, { getState }) => {
     const state = getState();
     const usersState = state.users;
@@ -12,12 +11,12 @@ export const fetchUsers = createAsyncThunk(
     const sortOrder = arg.sortOrder ?? usersState.sortOrder;
     const isBlocked = arg.isBlocked ?? usersState.isBlocked;
     const search = arg.search ?? usersState.search;
-    const response = await getUsersProfile(
+    const response = await getUsersProfile({
       sortBy,
       sortOrder,
       isBlocked,
-      search
-    );
+      search,
+    });
     console.log("Фанк вернул", response);
     return response;
   }
@@ -30,9 +29,9 @@ const usersSlice = createSlice({
     list: [],
     status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
     error: null,
-    sortBy: "id", // начальное значение сортировки
-    sortOrder: "asc", // направление сортировки
-    isBlocked: "", // фильтр по блокировке
+    sortBy: "id", 
+    sortOrder: "asc", 
+    isBlocked: "", 
     search: "",
   },
   reducers: {

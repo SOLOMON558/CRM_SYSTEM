@@ -11,7 +11,7 @@ export function DeleteUserModal() {
 
   const handleOkDelete = async () => {
     try {
-      console.log(currentUser)
+      console.log(currentUser);
       const response = await deleteUsersProfile(currentUser.id);
       console.log("Успешно удален", response);
       dispatch(fetchUsers());

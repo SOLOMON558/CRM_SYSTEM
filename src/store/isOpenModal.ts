@@ -1,6 +1,13 @@
 import { createSlice} from "@reduxjs/toolkit";
-const initialState = {
-    currentUser: null,
+import store from "./store";
+import { User } from "../types/users";
+interface ModalState {
+  currentUser: User | null;
+  activeModal: string | null;
+}
+
+const initialState: ModalState = {
+    currentUser:  null,
     activeModal: null,
   };
   
@@ -10,7 +17,6 @@ const initialState = {
     reducers: {
       openModal: (state, action) => {
         state.activeModal= action.payload
-        
       },
       closeModal: (state) => {
         state.activeModal = null
@@ -23,3 +29,4 @@ const initialState = {
 
   export default modalSlice.reducer;
   export const modalActions = modalSlice.actions
+export type RootState = ReturnType<typeof store.getState>;

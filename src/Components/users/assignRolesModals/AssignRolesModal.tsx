@@ -1,38 +1,41 @@
 import { Button, Modal } from "antd";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { editRoleUser } from "../../../api/users";
-import { fetchUsers } from "../../../store/users";
-import { modalActions } from "../../../store/isOpenModal";
+import { modalActions, RootState } from "../../../store/isOpenModal";
 import { ConfirmRoles } from "./ConfirmRoles";
 
+export enum Roles {
+  ADMIN = "ADMIN",
+  MODERATOR = "MODERATOR",
+  USER = "USER",
+}
+
 export function AssignRolesModal() {
-  const currentUser = useSelector((state) => state.modal.currentUser);
-  const currentModal = useSelector((state) => state.modal.activeModal);
-  const [statusRole, setStatusRole] = useState();
-  const [getRole, setGetRole] = useState([]);
+  const currentUser = useSelector(
+    (state: RootState) => state.modal.currentUser
+  );
+  const currentModal = useSelector(
+    (state: RootState) => state.modal.activeModal
+  );
+  const [statusRole, setStatusRole] = useState<boolean | null>(null);
+  const [getRole, setGetRole] = useState<Roles[]>([]);
   const [isOpenConfirm, setIsOpenConfirm] = useState(false);
   const dispatch = useDispatch();
-  console.log(currentUser);
 
-  function handleGiveRoles(role, status) {
+  function handleGiveRoles(role: Roles, status: boolean) {
     setStatusRole(status);
     setGetRole((prev) => (prev.includes(role) ? prev : [...prev, role]));
     console.log(getRole);
     if (!status && currentUser) {
-      const updateRole = currentUser.roles + ", " + role;
+      let updateRole = [];
+      updateRole = [...currentUser.roles, role];
       dispatch(
         modalActions.setCurrentUser({ ...currentUser, roles: updateRole })
       );
     }
     if (status && currentUser) {
-      let updateRole = "";
-      if (role === "MODERATOR" || role === "ADMIN") {
-        updateRole = currentUser.roles.replace(`, ${role}`, "");
-      }
-      if (role === "USER") {
-        updateRole = currentUser.roles.replace(`${role}, `, "");
-      }
+      let updateRole = [];
+      updateRole = currentUser.roles.filter((item) => item !== role);
       dispatch(
         modalActions.setCurrentUser({ ...currentUser, roles: updateRole })
       );
@@ -41,18 +44,6 @@ export function AssignRolesModal() {
 
   const handleOkRoles = async () => {
     setIsOpenConfirm(true);
-
-    // try {
-    //   const response = await editRoleUser(
-    //     currentUser.id,
-    //     currentUser.roles.split(", ")
-    //   );
-    //   dispatch(modalActions.closeModal());
-    //   console.log("Удалось обновить роли", response);
-    //   dispatch(fetchUsers());
-    // } catch (error) {
-    //   console.log("Не удалось обновить роли");
-    // }
   };
 
   const handleCancelRoles = () => {
@@ -66,8 +57,8 @@ export function AssignRolesModal() {
       <ConfirmRoles
         status={statusRole}
         addRole={getRole}
-        id={currentUser.id}
-        roles={currentUser.roles}
+        id={currentUser?.id}
+        roles={currentUser?.roles}
         isOpen={isOpenConfirm}
       />
       <Modal
@@ -84,12 +75,14 @@ export function AssignRolesModal() {
                 <Button
                   onClick={() =>
                     handleGiveRoles(
-                      "ADMIN",
-                      currentUser.roles.includes("ADMIN")
+                      Roles.ADMIN,
+                      currentUser.roles.includes(Roles.ADMIN)
                     )
                   }
                   type={
-                    currentUser.roles.includes("ADMIN") ? "primary" : "default"
+                    currentUser.roles.includes(Roles.ADMIN)
+                      ? "primary"
+                      : "default"
                   }
                 >
                   ADMIN
@@ -99,12 +92,12 @@ export function AssignRolesModal() {
                 <Button
                   onClick={() =>
                     handleGiveRoles(
-                      "MODERATOR",
-                      currentUser.roles.includes("MODERATOR")
+                      Roles.MODERATOR,
+                      currentUser.roles.includes(Roles.MODERATOR)
                     )
                   }
                   type={
-                    currentUser.roles.includes("MODERATOR")
+                    currentUser.roles.includes(Roles.MODERATOR)
                       ? "primary"
                       : "default"
                   }
@@ -115,10 +108,15 @@ export function AssignRolesModal() {
               <li>
                 <Button
                   onClick={() =>
-                    handleGiveRoles("USER", currentUser.roles.includes("USER"))
+                    handleGiveRoles(
+                      Roles.USER,
+                      currentUser.roles.includes(Roles.USER)
+                    )
                   }
                   type={
-                    currentUser.roles.includes("USER") ? "primary" : "default"
+                    currentUser.roles.includes(Roles.USER)
+                      ? "primary"
+                      : "default"
                   }
                 >
                   USER

@@ -1,12 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-import { getUsersProfile } from "../api/users";
 import { getUserData } from "../api/auth";
-import { tokenService } from "../services/token.service";
 
-// Создаем thunk
 export const fetchUserData = createAsyncThunk(
-  "users/fetchUserData", // тип действия
+  "users/fetchUserData",
   async () => {
     const response = await getUserData();
     console.log("Фанк с пользователем", response);
@@ -21,9 +17,7 @@ const userDataSlice = createSlice({
     status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
     error: null,
   },
-  reducers: {
-    
-  },
+  reducers: {},
 
   extraReducers: (builder) => {
     builder

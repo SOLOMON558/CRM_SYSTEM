@@ -4,9 +4,7 @@ import { Outlet, useLocation } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { fetchUserData } from "../store/userData";
-import store from "../store/store";
 import { stuffActions } from "../store/isStuff";
-
 const { Sider, Content } = Layout;
 
 const layoutStyle = {
@@ -16,7 +14,7 @@ const layoutStyle = {
   maxWidth: "calc(100% - 8px)",
 };
 export default function RootLayout(): JSX.Element {
-  console.log("Рут загрузился")
+  console.log("Рут загрузился");
   const user = useSelector((state) => state.userData.userData);
   const status = useSelector((state) => state.userData.status);
   const dispatch = useDispatch();

@@ -1,12 +1,7 @@
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
-
 import { useNavigate } from "react-router-dom";
-import store from "../store/store";
-import { useEffect } from "react";
-import { getUserData } from "../api/auth";
-import { stuffActions } from "../store/isStuff";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -21,11 +16,6 @@ const itemsAdmin: MenuItem[] = [
 ];
 
 export default function MainNavigation(): JSX.Element {
-  const user = useSelector((state) => state.userData.userData);
-  const status = useSelector((state) => state.userData.status);
-  console.log("Навигация зарендерилась");
-
-
   const isAdmin = useSelector((state: any) => state.stuff.isAdmin);
   const isModer = useSelector((state: any) => state.stuff.isModer);
   const navigate = useNavigate();

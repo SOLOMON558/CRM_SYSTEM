@@ -2,7 +2,6 @@ import { Button, Table, TableProps } from "antd";
 import { modalActions } from "../../store/isOpenModal";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-import { useState } from "react";
 import { fetchUsers, usersActions } from "../../store/users";
 import { DownOutlined, UpOutlined } from "@ant-design/icons";
 
@@ -72,11 +71,28 @@ export function TableWithUsers({ normalizedDataProfiles }) {
     {
       title: (
         <>
-          <Button style={{ color: (sortByStore === "username" ) ? "blue" : "grey"}} onClick={() => handleSortByUserName("username", "asc")}>
+          <Button
+            style={{ color: sortByStore === "username" ? "blue" : "grey" }}
+            onClick={() => handleSortByUserName("username", "asc")}
+          >
             "Имя"
           </Button>{" "}
-          <UpOutlined style={{ color:(sortByStore === "username" && sortOrderStore === "asc" ) ? "blue" : "grey"}} onClick={() => handleSortByUserName("username", "asc")} />{" "}
-          <DownOutlined style={{ color:(sortByStore === "username" && sortOrderStore === "desc" ) ? "blue" : "grey"}}
+          <UpOutlined
+            style={{
+              color:
+                sortByStore === "username" && sortOrderStore === "asc"
+                  ? "blue"
+                  : "grey",
+            }}
+            onClick={() => handleSortByUserName("username", "asc")}
+          />{" "}
+          <DownOutlined
+            style={{
+              color:
+                sortByStore === "username" && sortOrderStore === "desc"
+                  ? "blue"
+                  : "grey",
+            }}
             onClick={() => handleSortByUserName("username", "desc")}
           />
         </>
@@ -88,11 +104,30 @@ export function TableWithUsers({ normalizedDataProfiles }) {
     {
       title: (
         <>
-          <Button style={{ color: (sortByStore === "email") ? "blue" : "grey"}} onClick={() => handleSortByUserName("email", "asc")}>
+          <Button
+            style={{ color: sortByStore === "email" ? "blue" : "grey" }}
+            onClick={() => handleSortByUserName("email", "asc")}
+          >
             "Email"
           </Button>{" "}
-          <UpOutlined style={{ color: (sortByStore === "email" && sortOrderStore === "asc" ) ? "blue" : "grey"}} onClick={() => handleSortByUserName("email", "asc")} />{" "}
-          <DownOutlined  style={{ color: (sortByStore === "email" && sortOrderStore === "desc" ) ? "blue" : "grey"}} onClick={() => handleSortByUserName("email", "desc")} />
+          <UpOutlined
+            style={{
+              color:
+                sortByStore === "email" && sortOrderStore === "asc"
+                  ? "blue"
+                  : "grey",
+            }}
+            onClick={() => handleSortByUserName("email", "asc")}
+          />{" "}
+          <DownOutlined
+            style={{
+              color:
+                sortByStore === "email" && sortOrderStore === "desc"
+                  ? "blue"
+                  : "grey",
+            }}
+            onClick={() => handleSortByUserName("email", "desc")}
+          />
         </>
       ),
       dataIndex: "email",

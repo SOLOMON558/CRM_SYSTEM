@@ -5,11 +5,9 @@ import { fetchUsers } from "../../../store/users";
 import { useEffect, useState } from "react";
 import { editRoleUser } from "../../../api/users";
 
-export function ConfirmRoles({ status, addRole, id, roles, isOpen }) {
+export function ConfirmRoles({ status, addRole, id, roles, isOpen}) {
   console.log(addRole);
   const [isOpenConfirm, setIsOpenConfirm] = useState(false);
-  const currentUser = useSelector((state) => state.modal.currentUser);
-  const currentModal = useSelector((state) => state.modal.activeModal);
   const dispatch = useDispatch();
   const sortByStore = useSelector((state) => state.users.sortBy);
   const sortOrderStore = useSelector((state) => state.users.sortOrder);

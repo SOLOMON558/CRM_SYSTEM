@@ -1,12 +1,10 @@
 import { Button, Form, Input } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { usersActions } from "../store/users";
 import { editProfileUser, getUserProfileById } from "../api/users";
 export function UserProfilePage() {
   const navigate = useNavigate();
   const [form] = Form.useForm();
-
   const [userData, setUserData] = useState({});
   const params = useParams();
   const [isEdit, setIsEdit] = useState(false);
@@ -31,7 +29,7 @@ export function UserProfilePage() {
     try {
       const response = await editProfileUser(params.id, data);
       console.log("Данные обновлены", response);
-      setUserData(response.data)
+      setUserData(response.data);
       setIsEdit(false);
     } catch (error) {
       console.log("Ошибка обновления данных", error);

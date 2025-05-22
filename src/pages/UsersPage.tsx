@@ -1,17 +1,15 @@
 import { useEffect, useState } from "react";
-import {  Input, Form } from "antd";
+import { Input, Form } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers, usersActions } from "../store/users";
 import { useLocation, useNavigate, useNavigationType } from "react-router";
-import {  MonitorOutlined} from "@ant-design/icons";
+import { MonitorOutlined } from "@ant-design/icons";
 import { AssignRolesModal } from "../Components/users/assignRolesModals/AssignRolesModal";
 import { DeleteUserModal } from "../Components/users/DeleteUserModal";
 import { BlockUserModal } from "../Components/users/BlockUserModal";
 import { TableWithUsers } from "../Components/users/TableWithUsers";
 
-
 function UsersPage() {
-  console.log("Юзеры зарендерились")
   const user = useSelector((state) => state.modal.currentUser);
   const [normalizedDataProfiles, setNormalizedDataProfiles] = useState([]);
   const [form] = Form.useForm();
@@ -19,22 +17,22 @@ function UsersPage() {
   const users = useSelector((state) => state.users.list);
   const status = useSelector((state) => state.users.status);
   const error = useSelector((state) => state.users.error);
-  const navigationType = useNavigationType();
   const location = useLocation();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
-    function getUsersData () {
+    function getUsersData() {
+      console.log("ЗАПРОС ДЛЯ ЮЗЕРОВ 1");
       dispatch(fetchUsers());
     }
-    getUsersData()
+    getUsersData();
   }, [location.pathname]);
 
   useEffect(() => {
     async function usersDataProfiles() {
-      if(status==="failed") {
-        console.log("Ошибка/не админ", error)
-        navigate("/profile")
+      if (status === "failed") {
+        console.log("Ошибка/не админ", error);
+        navigate("/profile");
       }
       if (status === "succeeded") {
         console.log("Запрос пришел");
@@ -60,7 +58,7 @@ function UsersPage() {
 
   async function handleSearchUser(values) {
     const search = values.search;
-    dispatch(usersActions.setSearch(search))
+    dispatch(usersActions.setSearch(search));
     try {
       dispatch(fetchUsers());
       console.log("Получилось найти");

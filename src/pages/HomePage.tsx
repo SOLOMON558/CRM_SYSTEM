@@ -1,10 +1,8 @@
-import { useDebugValue, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "antd";
-import { getUserData, logoutUser } from "../api/auth";
+import { logoutUser } from "../api/auth";
 import { ProfileRequest } from "../types/auth";
 import { useDispatch, useSelector } from "react-redux";
-import { stuffActions } from "../store/isStuff";
-import { fetchUserData } from "../store/userData";
 import { authActions } from "../store/isAuthSlice";
 
 export default function HomePage(): JSX.Element {
@@ -21,7 +19,7 @@ export default function HomePage(): JSX.Element {
 
   async function handleLogoutProfile() {
     const response = await logoutUser();
-    if(response.answer==="deleted") {
+    if (response.answer === "deleted") {
       dispatch(authActions.logout());
     }
   }

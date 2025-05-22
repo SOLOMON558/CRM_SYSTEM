@@ -1,10 +1,7 @@
 import axios from "axios";
-
 import { tokenService } from "../services/token.service";
-import { authActions } from "../store/isAuthSlice";
 import { AuthData, UserRegistration } from "../types/auth";
-import { stuffActions } from "../store/isStuff";
-// ЕСЛИ НЕ ВПАДЛУ МОЖНО В ИНТЕРСЕПТОР АКСИОС РЕТРАЙ СДЕЛАТЬ
+
 const instanceAuth = axios.create({
   baseURL: "https://easydev.club/api/v1",
 });
@@ -19,6 +16,31 @@ instanceAuth.interceptors.request.use(
     return config;
   },
   (error) => {
+    return Promise.reject(error);
+  }
+);
+
+instanceAuth.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const original = error.config;
+    console.log("ОРИГИНАЛ", original);
+    if (original.url.includes("/auth/refresh")) {
+      return logoutUser();
+    }
+    if (error.response?.status === 401 && !original._retry) {
+      original._retry = true;
+      try {
+        await refreshAccessToken();
+        const newToken = tokenService.accessToken;
+        original.headers.Authorization = `Bearer ${newToken}`;
+        return instanceAuth(original);
+      } catch (error) {
+        console.log("Не получилось рефрешнуть");
+        return Promise.reject(error);
+      }
+    }
+    console.log("Ошибка не 401");
     return Promise.reject(error);
   }
 );
@@ -72,11 +94,7 @@ export async function getUserData(first: boolean = true) {
 
     return response.data;
   } catch (error: any) {
-    if (error.status === 401 && first) {
-      console.log("Зашли в ошибку");
-      await refreshAccessToken();
-      return await getUserData(false);
-    }
+    console.log("Ошибка получения пользователя profile");
   }
 }
 

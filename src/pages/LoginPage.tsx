@@ -1,28 +1,22 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Form, Input, Flex } from "antd";
 import { Link, useNavigate } from "react-router-dom";
-
 import { tokenService } from "../services/token.service";
 import { postDataSigninUser } from "../api/auth";
-
 import React, { useMemo, useState } from "react";
-import { RadiusUprightOutlined } from "@ant-design/icons";
 import { Button, Divider, notification, Space } from "antd";
-import type { NotificationArgsProps } from "antd";
 import { useDispatch } from "react-redux";
-import { stuffActions} from "../store/isStuff"
 import { authActions } from "../store/isAuthSlice";
-type NotificationPlacement = NotificationArgsProps["placement"];
 
 const Context = React.createContext({ name: "Default" });
 
 export default function Login(): JSX.Element {
-  const dispatch = useDispatch() 
+  const dispatch = useDispatch();
   const [isError, setIsError] = useState(false);
   const [api, contextHolder] = notification.useNotification();
 
-  const openNotification = (message:any) => {
-    const placement = "topRight"
+  const openNotification = (message: any) => {
+    const placement = "topRight";
     api.info({
       message: `Ошибка: ${message}`,
       placement,
@@ -37,13 +31,8 @@ export default function Login(): JSX.Element {
       const responseData = await postDataSigninUser(dataSigninUser);
 
       if (responseData !== null) {
-        dispatch(authActions.login())
-        tokenService.accessToken=responseData?.accessToken;
-
-        //проверил, устанавливаем
-
-        
-
+        dispatch(authActions.login());
+        tokenService.accessToken = responseData?.accessToken;
         navigate("/profile");
       }
     } catch (error: any) {
