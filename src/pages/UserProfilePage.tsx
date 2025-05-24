@@ -2,6 +2,7 @@ import { Button, Form, Input } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { editProfileUser, getUserProfileById } from "../api/users";
+import { emailRule, phoneRule, userNameRule } from "../services/validationRules";
 export function UserProfilePage() {
   const navigate = useNavigate();
   const [form] = Form.useForm();
@@ -24,7 +25,7 @@ export function UserProfilePage() {
     const data = {
       email: values.email === userData.email ? "" : values.email,
       phoneNumber: values.phone === userData.phoneNumber ? "" : values.phone,
-      username: values.name === userData.username ? "" : values.name,
+      username: values.username === userData.username ? "" : values.username,
     };
     try {
       const response = await editProfileUser(params.id, data);
@@ -65,38 +66,29 @@ export function UserProfilePage() {
               width: "fit-content",
             }}
             initialValues={{
-              name: userData.username,
+              username: userData.username,
               email: userData.email,
               phone: userData.phoneNumber,
             }}
           >
             Имя пользователя
             <Form.Item
-              name="name"
-              rules={[
-                { min: 2, message: "Минимум 2 символа!" },
-                { max: 64, message: "Максимум 64 символа!" },
-              ]}
+              name="username"
+              rules={userNameRule}
             >
               <Input type="text" />
             </Form.Item>
             Email пользователя
             <Form.Item
               name="email"
-              rules={[
-                { min: 2, message: "Минимум 2 символа!" },
-                { max: 64, message: "Максимум 64 символа!" },
-              ]}
+              rules={emailRule}
             >
               <Input type="text" />
             </Form.Item>
             Телефон пользователя
             <Form.Item
               name="phone"
-              rules={[
-                { min: 2, message: "Минимум 2 символа!" },
-                { max: 64, message: "Максимум 64 символа!" },
-              ]}
+              rules={phoneRule}
             >
               <Input type="text" />
             </Form.Item>

@@ -4,31 +4,32 @@ import { modalActions } from "../../store/isOpenModal";
 import { blockedUsersProfile, unBlockedUsersProfile } from "../../api/users";
 import { fetchUsers } from "../../store/users";
 
-export function BlockUserModal() {
-  const currentUser = useSelector((state) => state.modal.currentUser);
-  const currentModal = useSelector((state) => state.modal.activeModal);
+export function BlockUserModal({currentModal, setCurrentModal, currentUser, setCurrentUser}) {
   const dispatch = useDispatch();
 
   const handleOkBlocked = async () => {
+    console.log(currentUser.isBlocked)
     try {
-      if (currentUser?.isBlocked === "true") {
+      if (currentUser?.isBlocked === true) {
+        console.log("Зашли в разблокировку")
         const response = await unBlockedUsersProfile(currentUser.id);
         console.log(`Успешно разблокирован`, response);
       }
-      if (currentUser?.isBlocked === "false") {
+      if (currentUser?.isBlocked === false) {
+        console.log("Зашли в блокировку")
         const response = await blockedUsersProfile(currentUser.id);
         console.log(`Успешно блокирован`, response);
       }
       dispatch(fetchUsers());
-      dispatch(modalActions.closeModal());
+      setCurrentModal(null)
     } catch (error) {
       console.log("Ошибка при блокировке/разблокировке", error);
     }
   };
 
   const handleCancelBlocked = () => {
-    dispatch(modalActions.closeModal());
-    dispatch(modalActions.setCurrentUser(null));
+    setCurrentModal(null)
+    setCurrentUser(null)
   };
 
   return (

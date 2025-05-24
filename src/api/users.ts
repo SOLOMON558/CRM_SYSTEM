@@ -64,8 +64,12 @@ export async function deleteUsersProfile(id: number) {
   return response;
 }
 export async function blockedUsersProfile(id: number) {
+  try{
   const response = await instanceUsers.post(`/admin/users/${id}/block`);
-  return response;
+  return response; }
+  catch (error) {
+    console.log("Ошибка в блокировке", error)
+  }
 }
 export async function unBlockedUsersProfile(id: number) {
   const response = await instanceUsers.post(`/admin/users/${id}/unblock`);

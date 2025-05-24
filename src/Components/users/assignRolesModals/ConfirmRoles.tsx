@@ -5,7 +5,15 @@ import { fetchUsers } from "../../../store/users";
 import { useEffect, useState } from "react";
 import { editRoleUser } from "../../../api/users";
 
-export function ConfirmRoles({ status, addRole, id, roles, isOpen}) {
+export function ConfirmRoles({
+  setCurrentModal,
+  setCurrentUser,
+  status,
+  addRole,
+  id,
+  roles,
+  isOpen,
+}) {
   console.log(addRole);
   const [isOpenConfirm, setIsOpenConfirm] = useState(false);
   const dispatch = useDispatch();
@@ -16,12 +24,11 @@ export function ConfirmRoles({ status, addRole, id, roles, isOpen}) {
     setIsOpenConfirm(isOpen);
   }, [isOpen]);
   const handleOkConfirm = async () => {
+    console.log("Роли в конфирме", roles);
     try {
-      const response = await editRoleUser(id, roles.split(", "));
-      dispatch(modalActions.closeModal());
-      console.log("Удалось обновить роли", response);
-      dispatch(modalActions.closeModal());
-      dispatch(modalActions.setCurrentUser(null));
+      const response = await editRoleUser(id, roles);
+      setCurrentModal(null);
+      setCurrentUser(null);
       dispatch(
         fetchUsers({
           sortBy: sortByStore,
@@ -29,32 +36,31 @@ export function ConfirmRoles({ status, addRole, id, roles, isOpen}) {
           isBlocked: sortBlockedStore,
         })
       );
+      console.log("Удалось обновить роли", response);
     } catch (error) {
-      console.log("Не удалось обновить роли");
+      console.log("Не удалось обновить роли", error);
     }
   };
 
   const handleCancelConfirm = () => {
     setIsOpenConfirm(true);
-    dispatch(modalActions.closeModal());
-    dispatch(modalActions.setCurrentUser(null));
+    setCurrentModal(null);
+    setCurrentUser(null);
   };
 
   return (
     <Modal
-      title="Basic Modal"
+      title="Подтвердите действие"
       closable={{ "aria-label": "Custom Close Button" }}
       open={isOpenConfirm}
       onOk={handleOkConfirm}
       onCancel={handleCancelConfirm}
     >
+      <h2>Вы уверены, что хотите изменить роли на: </h2>
       {addRole?.map((item) => (
-        <p>
-          Вы уверены, что хотите{" "}
-          {status
-            ? `Забрать ${item} у пользователя`
-            : `Выдать ${item} пользователю`}
-        </p>
+        <>
+          <li>{item}</li>
+        </>
       ))}
     </Modal>
   );

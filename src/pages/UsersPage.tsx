@@ -2,16 +2,16 @@ import { useEffect, useState } from "react";
 import { Input, Form } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers, usersActions } from "../store/users";
-import { useLocation, useNavigate, useNavigationType } from "react-router";
-import { MonitorOutlined } from "@ant-design/icons";
+import { useLocation, useNavigate } from "react-router";
 import { AssignRolesModal } from "../Components/users/assignRolesModals/AssignRolesModal";
 import { DeleteUserModal } from "../Components/users/DeleteUserModal";
 import { BlockUserModal } from "../Components/users/BlockUserModal";
 import { TableWithUsers } from "../Components/users/TableWithUsers";
 
 function UsersPage() {
-  const user = useSelector((state) => state.modal.currentUser);
-  const [normalizedDataProfiles, setNormalizedDataProfiles] = useState([]);
+  const { Search } = Input;
+  const [currentUser, setCurrentUser] = useState();
+  const [currentModal, setCurrentModal] = useState();
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const users = useSelector((state) => state.users.list);
@@ -38,18 +38,6 @@ function UsersPage() {
         console.log("Запрос пришел");
         if (users) {
           console.log(users);
-          setNormalizedDataProfiles(
-            users.data.map((item) => ({
-              key: item.id,
-              id: item.id,
-              name: item.username,
-              email: item.email,
-              phone: item.phoneNumber,
-              data: new Date(item.date).toLocaleDateString(),
-              isBlocked: item.isBlocked ? "true" : "false",
-              roles: (item.roles || []).join(", "),
-            }))
-          );
         }
       }
     }
@@ -57,13 +45,15 @@ function UsersPage() {
   }, [status]);
 
   async function handleSearchUser(values) {
-    const search = values.search;
-    dispatch(usersActions.setSearch(search));
-    try {
-      dispatch(fetchUsers());
-      console.log("Получилось найти");
-    } catch (error) {
-      console.log("Не получилось найти", error);
+    if (values) {
+      const search = values.search;
+      dispatch(usersActions.setSearch(search));
+      try {
+        dispatch(fetchUsers());
+        console.log("Получилось найти");
+      } catch (error) {
+        console.log("Не получилось найти", error);
+      }
     }
   }
 
@@ -79,19 +69,50 @@ function UsersPage() {
             }}
           >
             {" "}
-            <MonitorOutlined />
-            <Input type="text" placeholder="Поиск" style={{ width: 200 }} />
+            <Search
+              placeholder="Поиск"
+              onSearch={handleSearchUser}
+              style={{ width: 200 }}
+            />
           </div>
         </Form.Item>
       </Form>
-      {user && (
+      {currentUser && (
         <>
-          <BlockUserModal />
-          <DeleteUserModal />
-          <AssignRolesModal />{" "}
+          {currentModal === "block" && (
+            <BlockUserModal
+              currentModal={currentModal}
+              setCurrentModal={setCurrentModal}
+              currentUser={currentUser}
+              setCurrentUser={setCurrentUser}
+            />
+          )}
+          {currentModal === "delete" && (
+            <DeleteUserModal
+              currentModal={currentModal}
+              setCurrentModal={setCurrentModal}
+              currentUser={currentUser}
+              setCurrentUser={setCurrentUser}
+            />
+          )}
+          {currentModal === "roles" && (
+            <AssignRolesModal
+              currentModal={currentModal}
+              setCurrentModal={setCurrentModal}
+              currentUser={currentUser}
+              setCurrentUser={setCurrentUser}
+            />
+          )}
         </>
       )}
-      <TableWithUsers normalizedDataProfiles={normalizedDataProfiles} />;
+      <TableWithUsers
+        currentModal={currentModal}
+        setCurrentModal={setCurrentModal}
+        currentUser={currentUser}
+        setCurrentUser={setCurrentUser}
+        normalizedDataProfiles={users.data}
+      />
+      ;
     </>
   );
 }

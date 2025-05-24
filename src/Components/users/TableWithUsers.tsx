@@ -1,19 +1,25 @@
-import { Button, Table, TableProps } from "antd";
+import { Button, Table, TableProps, Tag } from "antd";
 import { modalActions } from "../../store/isOpenModal";
+import { format } from "date-fns";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { fetchUsers, usersActions } from "../../store/users";
 import { DownOutlined, UpOutlined } from "@ant-design/icons";
 
-export function TableWithUsers({ normalizedDataProfiles }) {
+export function TableWithUsers({
+  setCurrentModal,
+  setCurrentUser,
+  normalizedDataProfiles,
+}) {
   const isAdmin = useSelector((state: any) => state.stuff.isAdmin);
   const navigate = useNavigate();
-
   const dispatch = useDispatch();
-  const sortByStore = useSelector((state) => state.users.sortBy);
-  const sortOrderStore = useSelector((state) => state.users.sortOrder);
   const sortBlockedStore = useSelector((state) => state.users.isBlocked);
-
+  const roleColors = {
+    ADMIN: "red",
+    USER: "blue",
+    MODERATOR: "volcano",
+  };
   interface DataType {
     key: string;
     name: string;
@@ -23,18 +29,18 @@ export function TableWithUsers({ normalizedDataProfiles }) {
     status: boolean;
   }
   const showModalBlocked = (user) => {
-    dispatch(modalActions.setCurrentUser(user));
-    dispatch(modalActions.openModal("block"));
+    setCurrentUser(user);
+    setCurrentModal("block");
   };
 
   const showModalDelete = (user) => {
-    dispatch(modalActions.setCurrentUser(user));
-    dispatch(modalActions.openModal("delete"));
+    setCurrentUser(user);
+    setCurrentModal("delete");
   };
 
   const showModalRoles = (user) => {
-    dispatch(modalActions.setCurrentUser(user));
-    dispatch(modalActions.openModal("roles"));
+    setCurrentUser(user);
+    setCurrentModal("roles");
   };
 
   async function handleSortByBlocked(status) {
@@ -46,107 +52,54 @@ export function TableWithUsers({ normalizedDataProfiles }) {
     if (status === "blocked") {
       isBlocked = "true";
     }
-    dispatch(usersActions.setSortBy(""));
-    dispatch(usersActions.setSortOrder(""));
     dispatch(usersActions.setBlocked(isBlocked));
     console.log(dispatch(usersActions.setBlocked(isBlocked)));
     dispatch(fetchUsers());
   }
-
-  async function handleSortByUserName(sortBy, sortOrder) {
-    console.log(sortBy, sortOrder, "в хандле");
-    dispatch(usersActions.setSortBy(sortBy));
-    dispatch(usersActions.setSortOrder(sortOrder));
-    dispatch(usersActions.setBlocked(""));
-
-    try {
-      dispatch(fetchUsers());
-      console.log("Получилось отфильтровать по имени");
-    } catch (error) {
-      console.log("Не получилось отфильтровать по имени", error);
-    }
+  function handleTableChange(pagination, filters, sorter) {
+    console.log("СОРТЕР", sorter);
+    const sortField = sorter?.columnKey || "";
+    const rawSortOrder = sorter?.order || "";
+    const sortOrder =
+      rawSortOrder === "ascend"
+        ? "asc"
+        : rawSortOrder === "descend"
+        ? "desc"
+        : "";
+    console.log(sortField, sortOrder);
+    dispatch(usersActions.setSortBy({ sortBy: sortField }));
+    dispatch(usersActions.setSortOrder({ sortOrder: sortOrder }));
+    dispatch(fetchUsers());
   }
 
   const columns = [
     {
-      title: (
-        <>
-          <Button
-            style={{ color: sortByStore === "username" ? "blue" : "grey" }}
-            onClick={() => handleSortByUserName("username", "asc")}
-          >
-            "Имя"
-          </Button>{" "}
-          <UpOutlined
-            style={{
-              color:
-                sortByStore === "username" && sortOrderStore === "asc"
-                  ? "blue"
-                  : "grey",
-            }}
-            onClick={() => handleSortByUserName("username", "asc")}
-          />{" "}
-          <DownOutlined
-            style={{
-              color:
-                sortByStore === "username" && sortOrderStore === "desc"
-                  ? "blue"
-                  : "grey",
-            }}
-            onClick={() => handleSortByUserName("username", "desc")}
-          />
-        </>
-      ),
-
-      dataIndex: "name",
-      key: "name",
+      title: "Имя",
+      dataIndex: "username",
+      key: "username",
+      sorter: (a, b) => a.username.localeCompare(b.username),
     },
     {
-      title: (
-        <>
-          <Button
-            style={{ color: sortByStore === "email" ? "blue" : "grey" }}
-            onClick={() => handleSortByUserName("email", "asc")}
-          >
-            "Email"
-          </Button>{" "}
-          <UpOutlined
-            style={{
-              color:
-                sortByStore === "email" && sortOrderStore === "asc"
-                  ? "blue"
-                  : "grey",
-            }}
-            onClick={() => handleSortByUserName("email", "asc")}
-          />{" "}
-          <DownOutlined
-            style={{
-              color:
-                sortByStore === "email" && sortOrderStore === "desc"
-                  ? "blue"
-                  : "grey",
-            }}
-            onClick={() => handleSortByUserName("email", "desc")}
-          />
-        </>
-      ),
+      title: "Email",
       dataIndex: "email",
       key: "email",
+      sorter: (a, b) => a.email.localeCompare(b.email),
     },
     {
       title: "Телефон",
-      dataIndex: "phone",
-      key: "phone",
+      dataIndex: "phoneNumber",
+      key: "phoneNumber",
     },
 
     {
       title: "Дата регистрации",
-      dataIndex: "data",
-      key: "data",
+      render: (text, record) => format(new Date(record.date), "dd.MM.yyyy"),
+      key: "date",
     },
     {
       title: "Статус",
-      dataIndex: "roles",
+      render: (text, record) =>
+        record.roles.map((item) => <Tag color={roleColors[item]}>{item}</Tag>),
       key: "roles",
     },
     {
@@ -176,7 +129,7 @@ export function TableWithUsers({ normalizedDataProfiles }) {
       ),
       render: (text, record) => (
         <Button type="primary" onClick={() => showModalBlocked(record)}>
-          {record.isBlocked}
+          {record.isBlocked ? "Заблокирован" : "Не заблокирован"}
         </Button>
       ),
 
@@ -239,6 +192,7 @@ export function TableWithUsers({ normalizedDataProfiles }) {
     <Table<DataType>
       columns={columns}
       dataSource={normalizedDataProfiles as any}
+      onChange={handleTableChange}
     />
   );
 }

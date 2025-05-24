@@ -4,9 +4,8 @@ import { modalActions } from "../../store/isOpenModal";
 import { deleteUsersProfile } from "../../api/users";
 import { fetchUsers } from "../../store/users";
 
-export function DeleteUserModal() {
-  const currentUser = useSelector((state) => state.modal.currentUser);
-  const currentModal = useSelector((state) => state.modal.activeModal);
+export function DeleteUserModal({currentModal, setCurrentModal, currentUser, setCurrentUser}) {
+  
   const dispatch = useDispatch();
 
   const handleOkDelete = async () => {
@@ -15,14 +14,14 @@ export function DeleteUserModal() {
       const response = await deleteUsersProfile(currentUser.id);
       console.log("Успешно удален", response);
       dispatch(fetchUsers());
-      dispatch(modalActions.closeModal());
+      setCurrentModal(null)
     } catch (error) {
       console.log("Ошибка при удалении", error);
     }
   };
   const handleCancelDelete = () => {
-    dispatch(modalActions.closeModal());
-    dispatch(modalActions.setCurrentUser(null));
+    setCurrentModal(null)
+    setCurrentUser(null)
   };
 
   return (

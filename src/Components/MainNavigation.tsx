@@ -4,16 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 type MenuItem = Required<MenuProps>["items"][number];
-
 const itemsUser: MenuItem[] = [
   { key: "1", label: "TODO-LIST" },
   { key: "2", label: "PROFILE" },
 ];
-const itemsAdmin: MenuItem[] = [
-  { key: "1", label: "TODO-LIST" },
-  { key: "2", label: "PROFILE" },
-  { key: "3", label: "USERS" },
-];
+const itemsAdmin: MenuItem[] = [...itemsUser, { key: "3", label: "USERS" }];
 
 export default function MainNavigation(): JSX.Element {
   const isAdmin = useSelector((state: any) => state.stuff.isAdmin);

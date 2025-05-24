@@ -2,6 +2,7 @@ import { Button, Form, Input, Select } from "antd";
 import { UserRegistration } from "../types/auth";
 import {  useNavigate } from "react-router-dom";
 import { postDataSignupUser } from "../api/auth";
+import { emailRule, emailRules, passwordRule, passwordRules, phoneRule, userNameRule } from "../services/validationRules";
 
 const { Option } = Select;
 const formItemLayout = {
@@ -92,26 +93,14 @@ export default function Registration(): JSX.Element {
       <Form.Item
         name="username"
         label="UserName"
-        rules={[
-          { required: true, message: "Имя не может быть пустым" },
-          { min: 1, message: "Введите более 1 символа" },
-          { max: 60, message: "Введите менее 60 символов" },
-          {
-            pattern: /^[A-Za-zА-Яа-яЁё]+$/,
-            message: "Имя состоит только из букв",
-          },
-        ]}
+        rules={userNameRule}
       >
         <Input />
       </Form.Item>
       <Form.Item
         name="password"
         label="Password"
-        rules={[
-          { required: true, message: "Имя не может быть пустым" },
-          { min: 6, message: "Введите более 5 символов" },
-          { max: 60, message: "Введите менее 60 символов" },
-        ]}
+        rules={passwordRule}
         hasFeedback
       >
         <Input.Password />
@@ -142,16 +131,7 @@ export default function Registration(): JSX.Element {
       <Form.Item
         name="email"
         label="E-mail"
-        rules={[
-          {
-            type: "email",
-            message: "Введите корректный email",
-          },
-          {
-            required: true,
-            message: "Введите email",
-          },
-        ]}
+        rules={emailRule}
       >
         <Input />
       </Form.Item>
@@ -159,7 +139,7 @@ export default function Registration(): JSX.Element {
       <Form.Item
         name="phone"
         label="Phone Number"
-        rules={[{ len: 10, message: "Введите 10 цифр телефона" }]}
+        rules={phoneRule}
       >
         <Input addonBefore={prefixSelector} style={{ width: "100%" }} />
       </Form.Item>
