@@ -1,17 +1,21 @@
 import { Button, Table, TableProps, Tag } from "antd";
-import { modalActions } from "../../store/isOpenModal";
 import { format } from "date-fns";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { fetchUsers, usersActions } from "../../store/users";
-import { DownOutlined, UpOutlined } from "@ant-design/icons";
+import { MetaResponse, User } from "../../types/users";
 
+interface TableModalProps {
+  setCurrentModal: (value: string | null) => void;
+  setCurrentUser: (user: User | null) => void;
+  users: MetaResponse<User>
+}
 export function TableWithUsers({
   setCurrentModal,
   setCurrentUser,
-  normalizedDataProfiles,
-}) {
-  const isAdmin = useSelector((state: any) => state.stuff.isAdmin);
+  users,
+}:TableModalProps) {
+  const isAdmin = useSelector((state) => state.stuff.isAdmin);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const sortBlockedStore = useSelector((state) => state.users.isBlocked);
@@ -168,7 +172,7 @@ export function TableWithUsers({
       : []),
     {
       title: "",
-      render: (text, record) => (
+      render: (text: any, record) => (
         <Button
           type="primary"
           onClick={() => {
@@ -191,7 +195,7 @@ export function TableWithUsers({
   return (
     <Table<DataType>
       columns={columns}
-      dataSource={normalizedDataProfiles as any}
+      dataSource={users as any}
       onChange={handleTableChange}
     />
   );

@@ -1,26 +1,30 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 import { getUsersProfile } from "../api/users";
+import { RootState } from "./store";
+import { User, UserFilters,  } from "../types/users";
 
-export const fetchUsers = createAsyncThunk(
-  "users/fetchUsers",
-  async (arg = {}, { getState }) => {
-    const state = getState();
-    const usersState = state.users;
-    const sortBy = arg.sortBy ?? usersState.sortBy;
-    const sortOrder = arg.sortOrder ?? usersState.sortOrder;
-    const isBlocked = arg.isBlocked ?? usersState.isBlocked;
-    const search = arg.search ?? usersState.search;
-    const response = await getUsersProfile({
-      sortBy,
-      sortOrder,
-      isBlocked,
-      search,
-    });
-    console.log("Фанк вернул", response);
-    return response;
-  }
-);
+
+export const fetchUsers = createAsyncThunk<
+  User[], // Тип возвращаемого значения (payload)
+  UserFilters | undefined, // Тип аргумента `arg`
+  { state: RootState } // ThunkAPI (для getState)
+>("users/fetchUsers", async (arg = {}, { getState }) => {
+  const state = getState();
+  const usersState = state.users;
+  const sortBy = arg.sortBy ?? usersState.sortBy;
+  const sortOrder = arg.sortOrder ?? usersState.sortOrder;
+  const isBlocked = arg.isBlocked ?? usersState.isBlocked;
+  const search = arg.search ?? usersState.search;
+  const response = await getUsersProfile({
+    sortBy,
+    sortOrder,
+    isBlocked,
+    search,
+  });
+  console.log("Фанк вернул", response);
+  return response;
+});
 
 const usersSlice = createSlice({
   name: "users",
@@ -29,9 +33,9 @@ const usersSlice = createSlice({
     list: [],
     status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
     error: null,
-    sortBy: "id", 
-    sortOrder: "asc", 
-    isBlocked: "", 
+    sortBy: "id",
+    sortOrder: "asc",
+    isBlocked: "",
     search: "",
   },
   reducers: {

@@ -3,8 +3,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { modalActions } from "../../store/isOpenModal";
 import { deleteUsersProfile } from "../../api/users";
 import { fetchUsers } from "../../store/users";
+import { User } from "../../types/users";
 
-export function DeleteUserModal({currentModal, setCurrentModal, currentUser, setCurrentUser}) {
+interface DeleteModalProps {
+  setCurrentModal: (value: string | null) => void;
+  setCurrentUser: (user: User | null) => void;
+  currentUser: User;
+  currentModal: string | null;
+}
+export function DeleteUserModal({currentModal, setCurrentModal, currentUser, setCurrentUser}:DeleteModalProps) {
   
   const dispatch = useDispatch();
 

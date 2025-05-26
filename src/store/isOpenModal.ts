@@ -29,4 +29,3 @@ const initialState: ModalState = {
 
   export default modalSlice.reducer;
   export const modalActions = modalSlice.actions
-export type RootState = ReturnType<typeof store.getState>;

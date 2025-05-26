@@ -1,21 +1,29 @@
 import { Modal } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { modalActions } from "../../../store/isOpenModal";
 import { fetchUsers } from "../../../store/users";
 import { useEffect, useState } from "react";
 import { editRoleUser } from "../../../api/users";
+import { Roles } from "./AssignRolesModal";
+import { User } from "../../../types/users";
 
+interface ConfirmRolesProps {
+  setCurrentModal: (value: string | null) => void;
+  setCurrentUser: (user: User | null) => void;
+  addRole: Roles[];
+  id: number;
+  roles: Roles[];
+  isOpen: boolean;
+}
 export function ConfirmRoles({
   setCurrentModal,
   setCurrentUser,
-  status,
   addRole,
   id,
   roles,
   isOpen,
-}) {
+}: ConfirmRolesProps) {
   console.log(addRole);
-  const [isOpenConfirm, setIsOpenConfirm] = useState(false);
+  const [isOpenConfirm, setIsOpenConfirm] = useState<boolean>(false);
   const dispatch = useDispatch();
   const sortByStore = useSelector((state) => state.users.sortBy);
   const sortOrderStore = useSelector((state) => state.users.sortOrder);

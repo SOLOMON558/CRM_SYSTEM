@@ -2,7 +2,7 @@ import { Button, Form, Input, Select } from "antd";
 import { UserRegistration } from "../types/auth";
 import {  useNavigate } from "react-router-dom";
 import { postDataSignupUser } from "../api/auth";
-import { emailRule, emailRules, passwordRule, passwordRules, phoneRule, userNameRule } from "../services/validationRules";
+import { emailRule,  passwordRule,  phoneRule, userNameRule } from "../services/validationRules";
 
 const { Option } = Select;
 const formItemLayout = {

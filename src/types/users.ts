@@ -42,4 +42,5 @@ export interface UserRequest {
   email?: string;
   phoneNumber?: string;
 }
+export type Modal = 'delete' | 'block' | 'roles'
 

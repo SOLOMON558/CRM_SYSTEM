@@ -3,15 +3,18 @@ import { Input, Form } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers, usersActions } from "../store/users";
 import { useLocation, useNavigate } from "react-router";
-import { AssignRolesModal } from "../Components/users/assignRolesModals/AssignRolesModal";
+import { AssignRolesModal, Roles } from "../Components/users/assignRolesModals/AssignRolesModal";
 import { DeleteUserModal } from "../Components/users/DeleteUserModal";
 import { BlockUserModal } from "../Components/users/BlockUserModal";
 import { TableWithUsers } from "../Components/users/TableWithUsers";
+import { Modal, User } from "../types/users";
+
+
 
 function UsersPage() {
   const { Search } = Input;
-  const [currentUser, setCurrentUser] = useState();
-  const [currentModal, setCurrentModal] = useState();
+  const [currentUser, setCurrentUser] = useState<User | null >();
+  const [currentModal, setCurrentModal] = useState<Modal>();
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const users = useSelector((state) => state.users.list);
@@ -44,7 +47,7 @@ function UsersPage() {
     usersDataProfiles();
   }, [status]);
 
-  async function handleSearchUser(values) {
+  async function handleSearchUser(values:{search:string}) {
     if (values) {
       const search = values.search;
       dispatch(usersActions.setSearch(search));
@@ -106,11 +109,9 @@ function UsersPage() {
         </>
       )}
       <TableWithUsers
-        currentModal={currentModal}
         setCurrentModal={setCurrentModal}
-        currentUser={currentUser}
         setCurrentUser={setCurrentUser}
-        normalizedDataProfiles={users.data}
+        users={users.data}
       />
       ;
     </>

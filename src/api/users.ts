@@ -2,6 +2,7 @@ import axios from "axios";
 import { tokenService } from "../services/token.service";
 import { refreshAccessToken } from "./auth";
 import { UserFilters, UserRequest, UserRolesRequest } from "../types/users";
+import { Roles } from "../Components/users/assignRolesModals/AssignRolesModal";
 
 const instanceUsers = axios.create({
   baseURL: "https://easydev.club/api/v1",
@@ -79,7 +80,7 @@ export async function editProfileUser(id: number, userData: UserRequest) {
   const response = await instanceUsers.put(`/admin/users/${id}`, userData);
   return response;
 }
-export async function editRoleUser(id: number, roles: UserRolesRequest) {
+export async function editRoleUser(id: number, roles:Roles[]) {
   const response = await instanceUsers.post(`/admin/users/${id}/rights`, {
     roles: roles,
   });

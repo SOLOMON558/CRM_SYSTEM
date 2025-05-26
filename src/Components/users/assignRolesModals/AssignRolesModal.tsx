@@ -1,11 +1,18 @@
 import { Button, Modal } from "antd";
 import { useState } from "react";
 import { ConfirmRoles } from "./ConfirmRoles";
+import { User } from "../../../types/users";
 
 export enum Roles {
   ADMIN = "ADMIN",
   MODERATOR = "MODERATOR",
   USER = "USER",
+}
+interface AssignRolesModalProps {
+  currentModal: string | null;
+  setCurrentModal: (value: string | null) => void;
+  currentUser: User 
+  setCurrentUser: (user: User | null) => void;
 }
 
 export function AssignRolesModal({
@@ -13,13 +20,11 @@ export function AssignRolesModal({
   setCurrentModal,
   currentUser,
   setCurrentUser,
-}) {
-  const [statusRole, setStatusRole] = useState<boolean | null>(null);
+}: AssignRolesModalProps) {
   const [getRole, setGetRole] = useState<Roles[]>([]);
   const [isOpenConfirm, setIsOpenConfirm] = useState(false);
 
   function handleGiveRoles(role: Roles, status: boolean) {
-    setStatusRole(status);
     console.log(getRole);
     if (!status && currentUser) {
       let updateRole = [];
@@ -34,9 +39,11 @@ export function AssignRolesModal({
   }
 
   const handleOkRoles = async () => {
-    let finalRole = currentUser.roles;
-    setGetRole([...finalRole]);
-    setIsOpenConfirm(true);
+    let finalRole = currentUser?.roles;
+    if (finalRole) {
+      setGetRole([...finalRole]);
+      setIsOpenConfirm(true);
+    }
   };
 
   const handleCancelRoles = () => {
@@ -48,11 +55,8 @@ export function AssignRolesModal({
   return (
     <>
       <ConfirmRoles
-        currentModal={currentModal}
         setCurrentModal={setCurrentModal}
         setCurrentUser={setCurrentUser}
-        currentUser={currentUser}
-        status={statusRole}
         addRole={getRole}
         id={currentUser?.id}
         roles={currentUser?.roles}
