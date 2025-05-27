@@ -1,4 +1,4 @@
-import { StatusType, TodoInfo } from "../types/type";
+import { StatusType, TodoInfo } from "../types/todos";
 import { Button } from "antd";
 export interface TabsListTypes {
   setStatus: (status: StatusType) => void;

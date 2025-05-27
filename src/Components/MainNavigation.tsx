@@ -1,17 +1,18 @@
-
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
-
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 type MenuItem = Required<MenuProps>["items"][number];
-
-const items: MenuItem[] = [
+const itemsUser: MenuItem[] = [
   { key: "1", label: "TODO-LIST" },
   { key: "2", label: "PROFILE" },
 ];
+const itemsAdmin: MenuItem[] = [...itemsUser, { key: "3", label: "USERS" }];
 
 export default function MainNavigation(): JSX.Element {
+  const isAdmin = useSelector((state: any) => state.stuff.isAdmin);
+  const isModer = useSelector((state: any) => state.stuff.isModer);
   const navigate = useNavigate();
   const onClick: MenuProps["onClick"] = (e) => {
     if (e.key === "1") {
@@ -20,15 +21,18 @@ export default function MainNavigation(): JSX.Element {
     if (e.key === "2") {
       navigate("/profile");
     }
+    if (e.key === "3") {
+      navigate("/users");
+    }
   };
 
   return (
     <Menu
       onClick={onClick}
-      style={{ width: 200, height: 600 }}
+      style={{ width: 150, height: 600 }}
       defaultOpenKeys={["sub1"]}
       mode="inline"
-      items={items}
+      items={isAdmin || isModer ? itemsAdmin : itemsUser}
     />
   );
 }
