@@ -3,17 +3,19 @@ import { Input, Form } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers, usersActions } from "../store/users";
 import { useLocation, useNavigate } from "react-router";
-import { AssignRolesModal, Roles } from "../Components/users/assignRolesModals/AssignRolesModal";
-import { DeleteUserModal } from "../Components/users/DeleteUserModal";
-import { BlockUserModal } from "../Components/users/BlockUserModal";
-import { TableWithUsers } from "../Components/users/TableWithUsers";
+import {
+  AssignRolesModal,
+  Roles,
+} from "../components/users/assignRolesModals/AssignRolesModal";
+import { DeleteUserModal } from "../components/users/DeleteUserModal";
+import { BlockUserModal } from "../components/users/BlockUserModal";
+import { TableWithUsers } from "../components/users/TableWithUsers";
 import { Modal, User } from "../types/users";
-
-
 
 function UsersPage() {
   const { Search } = Input;
-  const [currentUser, setCurrentUser] = useState<User | null >();
+  const [searchValue, setSearchValue] = useState("");
+  const [currentUser, setCurrentUser] = useState<User | null>();
   const [currentModal, setCurrentModal] = useState<Modal>();
   const [form] = Form.useForm();
   const dispatch = useDispatch();
@@ -31,26 +33,27 @@ function UsersPage() {
     getUsersData();
   }, [location.pathname]);
 
-  useEffect(() => {
-    async function usersDataProfiles() {
-      if (status === "failed") {
-        console.log("Ошибка/не админ", error);
-        navigate("/profile");
-      }
-      if (status === "succeeded") {
-        console.log("Запрос пришел");
-        if (users) {
-          console.log(users);
-        }
-      }
-    }
-    usersDataProfiles();
-  }, [status]);
+  // useEffect(() => {
+  //   async function usersDataProfiles() {
+  //     if (status === "failed") {
+  //       console.log("Ошибка/не админ", error);
+  //       navigate("/profile");
+  //     }
+  //     if (status === "succeeded") {
+  //       console.log("Запрос пришел");
+  //       if (users) {
+  //         console.log(users);
+  //       }
+  //     }
+  //   }
+  //   usersDataProfiles();
+  // }, [status]);
 
-  async function handleSearchUser(values:{search:string}) {
+  async function handleSearchUser(values: { search: string }) {
     if (values) {
       const search = values.search;
       dispatch(usersActions.setSearch(search));
+      console.log(search);
       try {
         dispatch(fetchUsers());
         console.log("Получилось найти");
@@ -59,6 +62,7 @@ function UsersPage() {
       }
     }
   }
+
 
   return (
     <>
@@ -73,8 +77,10 @@ function UsersPage() {
           >
             {" "}
             <Search
+              value={searchValue} 
               placeholder="Поиск"
-              onSearch={handleSearchUser}
+              onChange={(e) => setSearchValue(e.target.value)}
+              onSearch={(element)=>handleSearchUser({search: element})}
               style={{ width: 200 }}
             />
           </div>

@@ -1,4 +1,4 @@
-import { Roles } from "../Components/users/assignRolesModals/AssignRolesModal";
+import { Roles } from "../components/users/assignRolesModals/AssignRolesModal";
 
 export interface UserFilters {
   search?: string;
@@ -31,9 +31,8 @@ export interface MetaResponse<T> {
 }
 // Интерфейс для обновления прав пользователя
 export interface UserRolesRequest {
-  roles: Roles[]; // при вызове этой апи роли будут обновлены к тому массиву который будет передан
-  // например если у вас была roles: ['ADMIN'] а вы хотите добавить ['MODERATOR'] то нужно передавать
-  // старые + новые - roles: ['ADMIN', 'MODERATOR']
+  roles: Roles[]; 
+
 }
 
 // Интерфейс для обновления данных пользователя

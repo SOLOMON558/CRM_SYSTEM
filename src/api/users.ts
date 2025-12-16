@@ -2,7 +2,7 @@ import axios from "axios";
 import { tokenService } from "../services/token.service";
 import { refreshAccessToken } from "./auth";
 import { UserFilters, UserRequest, UserRolesRequest } from "../types/users";
-import { Roles } from "../Components/users/assignRolesModals/AssignRolesModal";
+import { Roles } from "../components/users/assignRolesModals/AssignRolesModal";
 
 const instanceUsers = axios.create({
   baseURL: "https://easydev.club/api/v1",

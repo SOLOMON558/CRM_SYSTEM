@@ -1,5 +1,5 @@
 import { Flex, Layout, Spin } from "antd";
-import MainNavigation from "../Components/MainNavigation";
+import MainNavigation from "../components/MainNavigation";
 import { Outlet, useLocation } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
@@ -19,7 +19,7 @@ export default function RootLayout(): JSX.Element {
   const status = useSelector((state) => state.userData.status);
   const dispatch = useDispatch();
   const location = useLocation();
-
+ 
   useEffect(() => {
     async function getUserData() {
       dispatch(fetchUserData());

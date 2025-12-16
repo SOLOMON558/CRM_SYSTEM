@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { getTasks } from "../api/todos.js";
-import TodoList from "../Components/TodoList.js";
-import AddTask from "../Components/AddTask.js";
-import TabsList from "../Components/TabsList.js";
+import TodoList from "../components/TodoList.js";
+import AddTask from "../components/AddTask.js";
+import TabsList from "../components/TabsList.js";
 import { Todo, TodoInfo } from "../types/todos.js";
 import { setStatus } from "../store/Slice.js";
 import { useDispatch, useSelector } from "react-redux";

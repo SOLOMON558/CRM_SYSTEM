@@ -66,8 +66,6 @@ export async function postDataSigninUser(dataSigninUser: AuthData) {
     if (response.request.status === 200) {
       alert("Успешный вход");
       localStorage.setItem("refreshToken", response.data.refreshToken);
-      localStorage.setItem("acess", response.data.accessToken);
-
       return response.data;
     }
   } catch (error: any) {

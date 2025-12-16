@@ -8,10 +8,11 @@ import Registration from "../pages/RegistrationPage";
 import {
   checkAuthLoader,
 } from "../services/loadersFunction";
-import AuthLayout from "../layout/Auth";
+import AuthLayout from "../layout/authLayout/AuthLayout";
 import UsersPage from "../pages/UsersPage";
 import { UserProfilePage } from "../pages/UserProfilePage";
 import ProtectedRoute from "./ProtectedRouter";
+import { Roles } from "../components/users/assignRolesModals/AssignRolesModal";
 
 export const router = createBrowserRouter([
   {
@@ -33,7 +34,7 @@ export const router = createBrowserRouter([
           {
             path: "users",
             element: (
-              <ProtectedRoute requiredRoles={["ADMIN", "MODERATOR"]}>
+              <ProtectedRoute requiredRoles={[Roles.ADMIN, Roles.MODERATOR]}>
                 <UsersPage />
               </ProtectedRoute>
             ),
@@ -41,7 +42,7 @@ export const router = createBrowserRouter([
           {
             path: "users/:id",
             element: (
-              <ProtectedRoute requiredRoles={["ADMIN", "MODERATOR"]}>
+              <ProtectedRoute requiredRoles={[Roles.ADMIN, Roles.MODERATOR]}>
                 <UserProfilePage />
               </ProtectedRoute>
             ),
