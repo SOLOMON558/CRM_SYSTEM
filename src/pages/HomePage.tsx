@@ -44,7 +44,7 @@ export default function HomePage(): JSX.Element {
           )}
         </>
       ) : (
-        <h1>"Жди бля"</h1>
+        <h1>"Ошибка получения данных"</h1>
       )}
     </>
   );

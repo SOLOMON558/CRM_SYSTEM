@@ -25,25 +25,17 @@ export function ConfirmRoles({
   console.log(addRole);
   const [isOpenConfirm, setIsOpenConfirm] = useState<boolean>(false);
   const dispatch = useDispatch();
-  const sortByStore = useSelector((state) => state.users.sortBy);
-  const sortOrderStore = useSelector((state) => state.users.sortOrder);
-  const sortBlockedStore = useSelector((state) => state.users.isBlocked);
   useEffect(() => {
     setIsOpenConfirm(isOpen);
   }, [isOpen]);
+  
   const handleOkConfirm = async () => {
     console.log("Роли в конфирме", roles);
     try {
       const response = await editRoleUser(id, roles);
       setCurrentModal(null);
       setCurrentUser(null);
-      dispatch(
-        fetchUsers({
-          sortBy: sortByStore,
-          sortOrder: sortOrderStore,
-          isBlocked: sortBlockedStore,
-        })
-      );
+      dispatch(fetchUsers());
       console.log("Удалось обновить роли", response);
     } catch (error) {
       console.log("Не удалось обновить роли", error);

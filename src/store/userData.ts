@@ -10,6 +10,8 @@ export const fetchUserData = createAsyncThunk(
   }
 );
 
+
+
 const userDataSlice = createSlice({
   name: "userData",
   initialState: {
@@ -37,3 +39,4 @@ const userDataSlice = createSlice({
 
 export default userDataSlice.reducer;
 export const userDataActions = userDataSlice.actions;
+

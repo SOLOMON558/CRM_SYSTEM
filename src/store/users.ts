@@ -6,16 +6,16 @@ import { User, UserFilters,  } from "../types/users";
 
 
 export const fetchUsers = createAsyncThunk<
-  User[], // Тип возвращаемого значения (payload)
-  UserFilters | undefined, // Тип аргумента `arg`
-  { state: RootState } // ThunkAPI (для getState)
+  User[], 
+  UserFilters | undefined, 
+  { state: RootState } 
 >("users/fetchUsers", async (arg = {}, { getState }) => {
   const state = getState();
   const usersState = state.users;
-  const sortBy = arg.sortBy ?? usersState.sortBy;
-  const sortOrder = arg.sortOrder ?? usersState.sortOrder;
-  const isBlocked = arg.isBlocked ?? usersState.isBlocked;
-  const search = arg.search ?? usersState.search;
+  const sortBy = usersState.sortBy; 
+  const sortOrder = usersState.sortOrder;
+  const isBlocked = usersState.isBlocked;
+  const search = usersState.search;
   const response = await getUsersProfile({
     sortBy,
     sortOrder,

@@ -32,6 +32,7 @@ const tailFormItemLayout = {
 export default function Registration(): JSX.Element {
   const [form] = Form.useForm();
   const navigate = useNavigate()
+  
   async function onFinish(values: UserRegistration) {
     let phoneNumber;
     if (values.phone) {
